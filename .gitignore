@@ -1,0 +1,8 @@
+ui_*h
+moc_*cpp
+*.o
+*.pro.user
+/snippy
+*.autosave
+Makefile
+qrc_resources.cpp
