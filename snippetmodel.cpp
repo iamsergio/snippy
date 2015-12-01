@@ -184,7 +184,7 @@ bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIn
 
     QDir dir(parentFolderPath);
     const QString absolutePath = parentFolderPath + "/" + name;
-    if (dir.exists()) {
+    if (QFile::exists(absolutePath)) {
         qWarning() << "Folder already exists" << absolutePath;
         return false;
     }
