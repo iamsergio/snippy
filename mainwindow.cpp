@@ -120,8 +120,11 @@ void MainWindow::createFolder()
     if (!name.isEmpty()) {
         QModelIndex index = selectedIndex();
         bool success = m_kernel.model()->createFolder(name, m_kernel.filterModel()->mapToSource(index));
-        if (!success)
+        if (success)
+            m_treeView->expand(index);
+        else
             statusBar()->showMessage(QStringLiteral("Failed to create folder: %1").arg(name));
+
     }
 }
 
@@ -139,6 +142,7 @@ void MainWindow::createSnippet()
     }
 
     m_kernel.model()->addSnippet(m_kernel.filterModel()->mapToSource(parentIndex));
+    m_treeView->expand(parentIndex);
 }
 
 void MainWindow::deleteSnippet()
