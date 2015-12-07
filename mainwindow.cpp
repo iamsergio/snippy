@@ -26,6 +26,10 @@
 #include <QItemSelection>
 #include <QInputDialog>
 
+enum {
+    FilterUpdateTimeout = 400 // ms
+};
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_snippet(nullptr)
@@ -33,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
     setupUi(this);
     m_splitter->setSizes({100, 1000});
     m_treeView->setModel(m_kernel.filterModel());
-    connect(m_filterLineEdit, &QLineEdit::textChanged,
-            m_kernel.filterModel(), &SnippetProxyModel::setFilterText);
     connect(m_deepSearchCB, &QCheckBox::toggled, m_kernel.filterModel(), &SnippetProxyModel::setIsDeepSearch);
 
     connect(m_kernel.model(), &SnippetModel::loaded,
@@ -64,6 +66,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_actionExpandAll, &QAction::triggered, m_treeView, &QTreeView::expandAll);
 
     m_filterLineEdit->setFocus();
+
+    connect(m_filterLineEdit, &QLineEdit::textChanged, this, &MainWindow::scheduleFilter);
+    m_scheduleFilterTimer.setSingleShot(true);
+    connect(&m_scheduleFilterTimer, &QTimer::timeout, this, &MainWindow::updateFilter);
 
     // m_treeView->setRootIsDecorated(false); commented out because it's december, the tree should be decorated
     setSnippet(nullptr);
@@ -159,6 +165,16 @@ void MainWindow::deleteSnippet()
 {
     QModelIndex proxyIndex = selectedIndex();
     m_kernel.model()->removeSnippet(m_kernel.filterModel()->mapToSource(proxyIndex));
+}
+
+void MainWindow::scheduleFilter()
+{
+    m_scheduleFilterTimer.start(FilterUpdateTimeout);
+}
+
+void MainWindow::updateFilter()
+{
+    m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
 }
 
 QModelIndex MainWindow::selectedIndex() const

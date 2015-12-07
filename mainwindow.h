@@ -31,6 +31,7 @@
 
 class QItemSelection;
 class QAction;
+class QTimer;
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -46,6 +47,8 @@ private Q_SLOTS:
     void createFolder();
     void createSnippet();
     void deleteSnippet();
+    void scheduleFilter();
+    void updateFilter();
 
 private:
     QModelIndex selectedIndex() const;
@@ -54,6 +57,7 @@ private:
     QAction *m_newFolderAction;
     QAction *m_newAction;
     QAction *m_delAction;
+    QTimer m_scheduleFilterTimer;
 };
 
 #endif
