@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_actionExpandAll, &QAction::triggered, m_treeView, &QTreeView::expandAll);
 
+    m_filterLineEdit->setFocus();
+
     // m_treeView->setRootIsDecorated(false); commented out because it's december, the tree should be decorated
     setSnippet(nullptr);
 }
