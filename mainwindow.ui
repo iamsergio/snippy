@@ -127,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>1123</width>
-     <height>19</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -135,6 +135,7 @@
      <string>Fi&amp;le</string>
     </property>
     <addaction name="m_actionReload"/>
+    <addaction name="m_actionExpandAll"/>
     <addaction name="m_actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -166,7 +167,12 @@
   </action>
   <action name="m_actionReload">
    <property name="text">
-    <string>Reload</string>
+    <string>&amp;Reload</string>
+   </property>
+  </action>
+  <action name="m_actionExpandAll">
+   <property name="text">
+    <string>Expand All</string>
    </property>
   </action>
  </widget>

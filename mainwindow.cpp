@@ -59,6 +59,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_delAction = m_toolBar->addAction(QIcon(":/img/list-remove.png"), "Remove");
     connect(m_delAction, &QAction::triggered, this, &MainWindow::deleteSnippet);
+    m_delAction->setShortcut(QKeySequence(QKeySequence::Delete));
+
+    connect(m_actionExpandAll, &QAction::triggered, m_treeView, &QTreeView::expandAll);
 
     // m_treeView->setRootIsDecorated(false); commented out because it's december, the tree should be decorated
     setSnippet(nullptr);
@@ -141,8 +144,13 @@ void MainWindow::createSnippet()
         }
     }
 
-    m_kernel.model()->addSnippet(m_kernel.filterModel()->mapToSource(parentIndex));
-    m_treeView->expand(parentIndex);
+    QModelIndex newIndex = m_kernel.model()->addSnippet(m_kernel.filterModel()->mapToSource(parentIndex));
+
+    if (newIndex.isValid()) {
+        m_treeView->expand(parentIndex);
+        QModelIndex newProxyIndex = m_kernel.filterModel()->mapFromSource(newIndex);
+        m_treeView->edit(newProxyIndex);
+    }
 }
 
 void MainWindow::deleteSnippet()

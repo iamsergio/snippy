@@ -48,14 +48,14 @@ public:
     Snippet* snippet(const QModelIndex &index) const;
     void load();
     void removeSnippet(const QModelIndex &index);
-    void addSnippet(const QModelIndex &parent);
+    QModelIndex addSnippet(const QModelIndex &parent);
     bool createFolder(const QString &name, const QModelIndex &parent);
 
 Q_SIGNALS:
     void loaded(int numSnippets, const QString &path);
 
 private:
-    void addSnippet(Snippet *, QStandardItem *parentItem);
+    QStandardItem* addSnippet(Snippet *, QStandardItem *parentItem);
     QStandardItem *addFolder(const QString &name, const QString &absolutePath, QStandardItem *parentItem);
     void import(QDir, QStandardItem *parentItem);
     QString rootPath() const;

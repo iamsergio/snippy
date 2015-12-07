@@ -139,7 +139,7 @@ void SnippetModel::removeSnippet(const QModelIndex &index)
         qWarning() << "Error removing" << snippet->absolutePath();
 }
 
-void SnippetModel::addSnippet(const QModelIndex &parentIndex)
+QModelIndex SnippetModel::addSnippet(const QModelIndex &parentIndex)
 {
     QString parentFolderPath;
     QStandardItem *parentItem;
@@ -153,7 +153,7 @@ void SnippetModel::addSnippet(const QModelIndex &parentIndex)
 
     if (parentFolderPath.isEmpty()) {
         qWarning() << Q_FUNC_INFO << "Could not retrieve parent folder path for" << parentIndex;
-        return;
+        return {};
     }
 
     QUuid uuid = QUuid::createUuid();
@@ -162,7 +162,8 @@ void SnippetModel::addSnippet(const QModelIndex &parentIndex)
     snip->setAbsolutePath(parentFolderPath + "/" + filename);
     snip->setTitle("Empty snippet");
     snip->saveToFile();
-    addSnippet(snip, parentItem);
+    QStandardItem *item = addSnippet(snip, parentItem);
+    return indexFromItem(item);
 }
 
 bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
@@ -200,12 +201,14 @@ bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIn
     return success;
 }
 
-void SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentItem)
+QStandardItem* SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentItem)
 {
     QStandardItem *fileItem = new QStandardItem();
     fileItem->setData(QVariant::fromValue(snippet), SnippetRole);
     parentItem->appendRow(fileItem);
     m_numSnippets++;
+
+    return fileItem;
 }
 
 QStandardItem* SnippetModel::addFolder(const QString &foldername,
