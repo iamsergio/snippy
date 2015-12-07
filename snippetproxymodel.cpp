@@ -54,6 +54,13 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         if (snippet->title().contains(m_text, Qt::CaseInsensitive))
             return true;
 
+        if (source_parent.isValid()) {
+            const QString absolutePath = source_parent.data(SnippetModel::AbsolutePathRole).toString();
+            if (absolutePath.toLower().contains(m_text)) {
+                return true;
+            }
+        }
+
         foreach (const QString &tag, snippet->tags()) {
             if (tag.contains(m_text, Qt::CaseInsensitive))
                 return true;
