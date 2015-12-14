@@ -175,6 +175,9 @@ void MainWindow::scheduleFilter()
 void MainWindow::updateFilter()
 {
     m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
+    if (!m_filterLineEdit->text().isEmpty()) {
+        m_treeView->expandAll();
+    }
 }
 
 QModelIndex MainWindow::selectedIndex() const
