@@ -249,6 +249,11 @@ void SnippetModel::import(QDir dir, QStandardItem *parentItem)
 
 QString SnippetModel::rootPath() const
 {
-    static const QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    static QString path;
+    if (path.isEmpty()) {
+        const char *env_path = qgetenv("SNIPPY_FOLDER");
+        path = env_path ? QString::fromUtf8(env_path) : QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    }
+	
     return path;
 }
