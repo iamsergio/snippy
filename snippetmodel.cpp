@@ -254,6 +254,6 @@ QString SnippetModel::rootPath() const
         const char *env_path = qgetenv("SNIPPY_FOLDER");
         path = env_path ? QString::fromUtf8(env_path) : QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     }
-	
+
     return path;
 }
