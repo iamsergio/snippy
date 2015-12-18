@@ -251,8 +251,8 @@ QString SnippetModel::rootPath() const
 {
     static QString path;
     if (path.isEmpty()) {
-        const char *env_path = qgetenv("SNIPPY_FOLDER");
-        path = env_path ? QString::fromUtf8(env_path) : QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        QByteArray env_path = qgetenv("SNIPPY_FOLDER");
+        path = env_path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) : QString::fromUtf8(env_path);
     }
 
     return path;
