@@ -51,6 +51,8 @@ public:
     QModelIndex addSnippet(const QModelIndex &parent);
     bool createFolder(const QString &name, const QModelIndex &parent);
 
+    static QString emptySnippetTitle();
+
 Q_SIGNALS:
     void loaded(int numSnippets, const QString &path);
 

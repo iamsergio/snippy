@@ -166,6 +166,12 @@ QModelIndex SnippetModel::addSnippet(const QModelIndex &parentIndex)
     return indexFromItem(item);
 }
 
+/*static*/
+QString SnippetModel::emptySnippetTitle()
+{
+    return tr("Empty snippet");
+}
+
 bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
 {
     QString parentFolderPath;
