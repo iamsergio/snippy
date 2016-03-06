@@ -51,7 +51,8 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
     } else {
         Snippet *snippet = idx.data(SnippetModel::SnippetRole).value<Snippet*>();
 
-        if (snippet->title().contains(m_text, Qt::CaseInsensitive))
+        const QString title = snippet->title();
+        if (title.contains(m_text, Qt::CaseInsensitive) || title == SnippetModel::emptySnippetTitle())
             return true;
 
         if (source_parent.isValid()) {
