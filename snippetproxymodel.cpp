@@ -28,6 +28,10 @@
 SnippetProxyModel::SnippetProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    connect(this, &SnippetProxyModel::rowsInserted, this, &SnippetProxyModel::countChanged);
+    connect(this, &SnippetProxyModel::rowsRemoved, this, &SnippetProxyModel::countChanged);
+    connect(this, &SnippetProxyModel::modelReset, this, &SnippetProxyModel::countChanged);
+    connect(this, &SnippetProxyModel::layoutChanged, this, &SnippetProxyModel::countChanged);
 }
 
 bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

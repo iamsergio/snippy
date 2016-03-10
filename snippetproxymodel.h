@@ -35,6 +35,8 @@ public:
     bool isDeepSearch() const;
     void setIsDeepSearch(bool);
     void setFilterText(QString);
+Q_SIGNALS:
+    void countChanged();
 private:
     bool m_deepSearch = false;
     QString m_text;
