@@ -172,7 +172,7 @@ QString SnippetModel::emptySnippetTitle()
     return tr("Empty snippet");
 }
 
-bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
+QStandardItem * SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
 {
     QString parentFolderPath;
     QStandardItem *parentItem;
@@ -186,25 +186,24 @@ bool SnippetModel::createFolder(const QString &name, const QModelIndex &parentIn
 
     if (parentFolderPath.isEmpty()) {
         qWarning() << Q_FUNC_INFO << "Could not retrieve parent folder path for" << parentIndex;
-        return false;
+        return nullptr;
     }
 
     QDir dir(parentFolderPath);
     const QString absolutePath = parentFolderPath + "/" + name;
     if (QFile::exists(absolutePath)) {
         qWarning() << "Folder already exists" << absolutePath;
-        return false;
+        return nullptr;
     }
 
-    bool success = dir.mkpath(name);
-
-    if (success) {
-        addFolder(name, parentFolderPath + "/" + name, parentItem);
+    QStandardItem *newItem = nullptr;
+    if (dir.mkpath(name)) {
+        newItem = addFolder(name, parentFolderPath + "/" + name, parentItem);
     } else {
         qWarning() << "Failed to create folder" << name;
     }
 
-    return success;
+    return newItem;
 }
 
 QStandardItem* SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentItem)

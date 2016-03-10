@@ -49,7 +49,7 @@ public:
     void load();
     void removeSnippet(const QModelIndex &index);
     QModelIndex addSnippet(const QModelIndex &parent);
-    bool createFolder(const QString &name, const QModelIndex &parent);
+    QStandardItem *createFolder(const QString &name, const QModelIndex &parent);
 
     static QString emptySnippetTitle();
 
