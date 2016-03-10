@@ -167,7 +167,7 @@ void MainWindow::createSnippet()
         m_treeView->expand(parentIndex);
         QModelIndex newProxyIndex = m_kernel.filterModel()->mapFromSource(newIndex);
         m_treeView->scrollTo(newProxyIndex);
-        m_treeView->selectionModel()->select(newProxyIndex, QItemSelectionModel::Select);
+        m_treeView->selectionModel()->select(newProxyIndex, QItemSelectionModel::ClearAndSelect);
         m_treeView->edit(newProxyIndex);
     }
 }
