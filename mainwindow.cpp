@@ -25,6 +25,8 @@
 #include <QTimer>
 #include <QItemSelection>
 #include <QInputDialog>
+#include <QFontDatabase>
+#include <QApplication>
 
 enum {
     FilterUpdateTimeout = 400 // ms
@@ -34,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_snippet(nullptr)
 {
+    qApp->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
     setupUi(this);
     m_splitter->setSizes({100, 1000});
     m_treeView->setModel(m_kernel.filterModel());
