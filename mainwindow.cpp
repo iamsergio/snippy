@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_deepSearchCB, &QCheckBox::toggled, m_kernel.filterModel(), &SnippetProxyModel::setIsDeepSearch);
 
     connect(m_kernel.model(), &SnippetModel::loaded,
-            [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2/").arg(num).arg(path));});
+            [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path));});
 
     connect(m_kernel.filterModel(), &SnippetProxyModel::countChanged,
     [this] {
