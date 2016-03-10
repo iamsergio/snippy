@@ -91,14 +91,6 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="font">
-           <font>
-            <family>DejaVu Sans Mono</family>
-            <pointsize>11</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
          </widget>
         </item>
        </layout>
