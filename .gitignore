@@ -5,4 +5,8 @@ moc_*cpp
 /snippy
 *.autosave
 Makefile
+/Makefile.*
 qrc_resources.cpp
+/build
+/release
+/.kdev4
