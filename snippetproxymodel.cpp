@@ -46,6 +46,8 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
 
     const bool isFolder = idx.data(SnippetModel::IsFolderRole).toBool();
     const QString title = idx.data(Qt::DisplayRole).toString();
+    if (title.contains(m_text, Qt::CaseInsensitive))
+        return true;
 
     if (isFolder) {
         const int numChildren = sourceModel()->rowCount(idx);
@@ -55,7 +57,7 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         }
     } else {
         Snippet *snippet = idx.data(SnippetModel::SnippetRole).value<Snippet*>();
-        if (title.contains(m_text, Qt::CaseInsensitive) || title == SnippetModel::emptySnippetTitle())
+        if (title == SnippetModel::emptySnippetTitle())
             return true;
 
         if (source_parent.isValid()) {
