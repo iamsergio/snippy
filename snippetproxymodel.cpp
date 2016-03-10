@@ -49,6 +49,13 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
     if (title.contains(m_text, Qt::CaseInsensitive))
         return true;
 
+    if (source_parent.isValid()) {
+        const QString absolutePath = source_parent.data(SnippetModel::AbsolutePathRole).toString();
+        if (absolutePath.contains(m_text, Qt::CaseInsensitive)) {
+            return true;
+        }
+    }
+
     if (isFolder) {
         const int numChildren = sourceModel()->rowCount(idx);
         for (int i = 0; i < numChildren; ++i) {
@@ -59,13 +66,6 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         Snippet *snippet = idx.data(SnippetModel::SnippetRole).value<Snippet*>();
         if (title == SnippetModel::emptySnippetTitle())
             return true;
-
-        if (source_parent.isValid()) {
-            const QString absolutePath = source_parent.data(SnippetModel::AbsolutePathRole).toString();
-            if (absolutePath.contains(m_text, Qt::CaseInsensitive)) {
-                return true;
-            }
-        }
 
         foreach (const QString &tag, snippet->tags()) {
             if (tag.contains(m_text, Qt::CaseInsensitive))
