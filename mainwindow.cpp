@@ -141,9 +141,10 @@ void MainWindow::createFolder()
         QModelIndex index = selectedIndex();
         QStandardItem *newItem = m_kernel.model()->createFolder(name, m_kernel.filterModel()->mapToSource(index));
         if (newItem) {
+            QModelIndex newIndex = m_kernel.filterModel()->mapFromSource(newItem->index());
             m_treeView->expand(index);
-            m_treeView->scrollTo(newItem->index());
-            m_treeView->selectionModel()->select(newItem->index(), QItemSelectionModel::ClearAndSelect);
+            m_treeView->scrollTo(newIndex);
+            m_treeView->selectionModel()->select(newIndex, QItemSelectionModel::ClearAndSelect);
         } else {
             statusBar()->showMessage(QStringLiteral("Failed to create folder: %1").arg(name));
         }
