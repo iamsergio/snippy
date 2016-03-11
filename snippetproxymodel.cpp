@@ -51,9 +51,8 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
 
     if (source_parent.isValid()) {
         const QString absolutePath = source_parent.data(SnippetModel::AbsolutePathRole).toString();
-        if (absolutePath.contains(m_text, Qt::CaseInsensitive)) {
+        if (absolutePath.contains(m_text, Qt::CaseInsensitive))
             return true;
-        }
     }
 
     if (isFolder) {
