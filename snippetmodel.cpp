@@ -63,6 +63,12 @@ QVariant SnippetModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    if (role == RelativePathRole) {
+        QFileInfo absolute(QStandardItemModel::data(index, AbsolutePathRole).toString());
+        QFileInfo root(rootPath());
+        return absolute.absoluteFilePath().replace(root.absoluteFilePath(), QString());
+    }
+
     return QStandardItemModel::data(index, role);
 }
 

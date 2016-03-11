@@ -38,7 +38,8 @@ public:
         SnippetRole = Qt::UserRole + 1,
         IsFolderRole,
         FolderNameRole,
-        AbsolutePathRole
+        AbsolutePathRole,
+        RelativePathRole
     };
 
     explicit SnippetModel(QObject *parent = nullptr);

@@ -50,7 +50,7 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         return true;
 
     if (source_parent.isValid()) {
-        const QString absolutePath = source_parent.data(SnippetModel::AbsolutePathRole).toString();
+        const QString absolutePath = source_parent.data(SnippetModel::RelativePathRole).toString();
         if (absolutePath.contains(m_text, Qt::CaseInsensitive))
             return true;
     }
