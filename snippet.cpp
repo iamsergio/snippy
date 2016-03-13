@@ -139,6 +139,7 @@ bool Snippet::saveToFile() const
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     out << m_title << "\n" << tagsString() << "\n" << m_contents;
 
     qDebug() << Q_FUNC_INFO << "Saved" << m_absolutePath;
