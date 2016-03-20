@@ -138,13 +138,13 @@ void MainWindow::createFolder()
 {
     const QString &name = QInputDialog::getText(this, "Snippy", "Enter folder name");
     if (!name.isEmpty()) {
-        QModelIndex index = selectedIndex();
-        QStandardItem *newItem = m_kernel.model()->createFolder(name, m_kernel.filterModel()->mapToSource(index));
+        QModelIndex selectedProxyIndex = selectedIndex();
+        QStandardItem *newItem = m_kernel.model()->createFolder(name, m_kernel.filterModel()->mapToSource(selectedProxyIndex));
         if (newItem) {
-            QModelIndex newIndex = m_kernel.filterModel()->mapFromSource(newItem->index());
-            m_treeView->expand(index);
-            m_treeView->scrollTo(newIndex);
-            m_treeView->selectionModel()->select(newIndex, QItemSelectionModel::ClearAndSelect);
+            QModelIndex newProxyIndex = m_kernel.filterModel()->mapFromSource(newItem->index());
+            m_treeView->expand(selectedProxyIndex);
+            m_treeView->scrollTo(newProxyIndex);
+            m_treeView->selectionModel()->select(newProxyIndex, QItemSelectionModel::ClearAndSelect);
         } else {
             statusBar()->showMessage(QStringLiteral("Failed to create folder: %1").arg(name));
         }
