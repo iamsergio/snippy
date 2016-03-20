@@ -58,10 +58,11 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
             return true;
     }
 
-    if (foldersOnly && !isFolder)
+    const QString title = idx.data(Qt::DisplayRole).toString();
+
+    if (foldersOnly && (!isFolder && title != SnippetModel::emptySnippetTitle()))
         return false;
 
-    const QString title = idx.data(Qt::DisplayRole).toString();
     if (title.contains(filterText, Qt::CaseInsensitive))
         return true;
 
