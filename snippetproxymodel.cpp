@@ -42,18 +42,28 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
     if (m_text.isEmpty())
         return true;
 
-    QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
+    QString filterText = m_text;
+    bool foldersOnly = false;
+    if (m_text.startsWith(':')) {
+        foldersOnly = true;
+        filterText.remove(0, 1);
+    }
 
+    QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
     const bool isFolder = idx.data(SnippetModel::IsFolderRole).toBool();
-    const QString title = idx.data(Qt::DisplayRole).toString();
-    if (title.contains(m_text, Qt::CaseInsensitive))
-        return true;
 
     if (source_parent.isValid()) {
         const QString absolutePath = source_parent.data(SnippetModel::RelativePathRole).toString();
-        if (absolutePath.contains(m_text, Qt::CaseInsensitive))
+        if (absolutePath.contains(filterText, Qt::CaseInsensitive))
             return true;
     }
+
+    if (foldersOnly && !isFolder)
+        return false;
+
+    const QString title = idx.data(Qt::DisplayRole).toString();
+    if (title.contains(filterText, Qt::CaseInsensitive))
+        return true;
 
     if (isFolder) {
         const int numChildren = sourceModel()->rowCount(idx);
@@ -67,12 +77,12 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
             return true;
 
         foreach (const QString &tag, snippet->tags()) {
-            if (tag.contains(m_text, Qt::CaseInsensitive))
+            if (tag.contains(filterText, Qt::CaseInsensitive))
                 return true;
         }
 
         if (m_deepSearch) {
-            if (snippet->contents().contains(m_text, Qt::CaseInsensitive))
+            if (snippet->contents().contains(filterText, Qt::CaseInsensitive))
                 return true;
         }
     }
