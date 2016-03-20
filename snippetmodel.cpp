@@ -199,7 +199,7 @@ QStandardItem * SnippetModel::createFolder(const QString &name, const QModelInde
     const QString absolutePath = parentFolderPath + "/" + name;
     if (QFile::exists(absolutePath)) {
         qWarning() << "Folder already exists" << absolutePath;
-        return nullptr;
+        return itemForName(name, parentIndex); // But still return it, so it can be selected
     }
 
     QStandardItem *newItem = nullptr;
@@ -231,6 +231,19 @@ QStandardItem* SnippetModel::addFolder(const QString &foldername,
     folderItem->setData(absolutePath, AbsolutePathRole);
     parentItem->appendRow(folderItem);
     return folderItem;
+}
+
+QStandardItem *SnippetModel::itemForName(const QString &name, const QModelIndex &parentIndex)
+{
+    const int childCount = rowCount(parentIndex);
+    for (int i = 0; i < childCount; ++i) {
+        auto childIndex = index(i, 0, parentIndex);
+        auto childName = data(childIndex, Qt::DisplayRole).toString();
+        if (childName == name)
+            return itemFromIndex(childIndex);
+    }
+
+    return nullptr;
 }
 
 void SnippetModel::import(QDir dir, QStandardItem *parentItem)

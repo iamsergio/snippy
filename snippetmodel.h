@@ -60,6 +60,7 @@ Q_SIGNALS:
 private:
     QStandardItem* addSnippet(Snippet *, QStandardItem *parentItem);
     QStandardItem *addFolder(const QString &name, const QString &absolutePath, QStandardItem *parentItem);
+    QStandardItem * itemForName(const QString &name, const QModelIndex &parentIndex);
     void import(QDir, QStandardItem *parentItem);
     QString rootPath() const;
 
