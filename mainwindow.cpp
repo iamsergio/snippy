@@ -46,10 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_kernel.model(), &SnippetModel::loaded,
             [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path));});
 
-    connect(m_kernel.filterModel(), &SnippetProxyModel::countChanged,
+    /*connect(m_kernel.filterModel(), &SnippetProxyModel::countChanged,
     [this] {
-        statusBar()->showMessage(QStringLiteral("Showing %1 snippets").arg(m_kernel.filterModel()->rowCount()));
-    });
+        statusBar()->showMessage(QStringLiteral("Showing %1 snippets").arg(m_kernel.filterModel()->rowCount())); // FIXME: Needs a recursive count
+    });*/
 
     connect(m_tagsLineEdit, &QLineEdit::textChanged, this, &MainWindow::saveNewTags);
     connect(m_textEdit, &QPlainTextEdit::textChanged, this, &MainWindow::saveNewContents);
