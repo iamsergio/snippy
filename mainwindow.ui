@@ -148,6 +148,9 @@
    <property name="text">
     <string>&amp;New Snippet</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
    </property>
@@ -160,6 +163,9 @@
   <action name="m_actionReload">
    <property name="text">
     <string>&amp;Reload</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
   <action name="m_actionExpandAll">
