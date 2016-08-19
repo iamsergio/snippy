@@ -10,3 +10,4 @@ qrc_resources.cpp
 /build
 /release
 /.kdev4
+.qmake.stash
