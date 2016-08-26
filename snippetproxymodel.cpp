@@ -46,17 +46,22 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
 
 bool SnippetProxyModel::accepts(const QModelIndex &idx) const
 {
-    if (m_text.isEmpty())
+    return accepts(m_text, idx);
+}
+
+bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &idx) const
+{
+    if (searchToken.isEmpty())
         return true;
 
-    QString filterText = m_text;
+    QString filterText = searchToken;
     bool foldersOnly = false;
-    if (m_text.startsWith(':')) {
+    if (searchToken.startsWith(':')) {
         foldersOnly = true;
         filterText.remove(0, 1);
     }
 
-    filterText.replace(QRegularExpression("\/*$"), QString());   // Remove trailling slash
+    filterText.replace(QRegularExpression("\\/*$"), QString());   // Remove trailling slash
     filterText.replace(QRegularExpression("\\\\*$"), QString()); // Remove trailling back-slash
 
     QModelIndex parent = idx.parent();

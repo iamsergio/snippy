@@ -38,7 +38,12 @@ public:
 Q_SIGNALS:
     void countChanged();
 private:
+    // Checks if we accept the row, given the line edit filter text, like: "foo & bar"
     bool accepts(const QModelIndex &idx) const;
+
+    // Checks if we accept the row, given a single search token, like "foo".
+    bool accepts(const QString &token, const QModelIndex &idx) const;
+
     bool m_deepSearch = false;
     QString m_text;
 };
