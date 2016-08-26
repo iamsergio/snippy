@@ -39,6 +39,12 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
     if (!sourceModel() || source_row < 0 || source_row >= sourceModel()->rowCount(source_parent))
         return false;
 
+
+    return accepts(sourceModel()->index(source_row, 0, source_parent));
+}
+
+bool SnippetProxyModel::accepts(const QModelIndex &idx) const
+{
     if (m_text.isEmpty())
         return true;
 
@@ -49,11 +55,11 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         filterText.remove(0, 1);
     }
 
-    QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
+    QModelIndex parent = idx.parent();
     const bool isFolder = idx.data(SnippetModel::IsFolderRole).toBool();
 
-    if (source_parent.isValid()) {
-        const QString absolutePath = source_parent.data(SnippetModel::RelativePathRole).toString();
+    if (parent.isValid()) {
+        const QString absolutePath = parent.data(SnippetModel::RelativePathRole).toString();
         if (absolutePath.contains(filterText, Qt::CaseInsensitive))
             return true;
     }

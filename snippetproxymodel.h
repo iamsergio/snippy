@@ -38,6 +38,7 @@ public:
 Q_SIGNALS:
     void countChanged();
 private:
+    bool accepts(const QModelIndex &idx) const;
     bool m_deepSearch = false;
     QString m_text;
 };
