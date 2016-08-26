@@ -24,6 +24,7 @@
 #include "snippetmodel.h"
 
 #include <QDebug>
+#include <QRegularExpression>
 
 SnippetProxyModel::SnippetProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -54,6 +55,9 @@ bool SnippetProxyModel::accepts(const QModelIndex &idx) const
         foldersOnly = true;
         filterText.remove(0, 1);
     }
+
+    filterText.replace(QRegularExpression("\/*$"), QString());   // Remove trailling slash
+    filterText.replace(QRegularExpression("\\\\*$"), QString()); // Remove trailling back-slash
 
     QModelIndex parent = idx.parent();
     const bool isFolder = idx.data(SnippetModel::IsFolderRole).toBool();
