@@ -84,7 +84,7 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
     if (isFolder) {
         const int numChildren = sourceModel()->rowCount(idx);
         for (int i = 0; i < numChildren; ++i) {
-            if (filterAcceptsRow(i, idx))
+            if (accepts(sourceModel()->index(i, 0)))
                 return true;
         }
     } else {
