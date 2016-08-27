@@ -45,7 +45,8 @@ QVariant SnippetModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    if (isFolder(index)) {
+    const bool isFolder = this->isFolder(index);
+    if (isFolder) {
         if (role == Qt::DecorationRole) {
             QStyle *style = qApp->style();
             return style->standardIcon(QStyle::SP_DirOpenIcon);
@@ -67,6 +68,10 @@ QVariant SnippetModel::data(const QModelIndex &index, int role) const
         QFileInfo absolute(QStandardItemModel::data(index, AbsolutePathRole).toString());
         QFileInfo root(rootPath());
         return absolute.absoluteFilePath().replace(root.absoluteFilePath(), QString());
+    } else if (role == Qt::FontRole) {
+        QFont font = QStandardItemModel::data(index, Qt::FontRole).value<QFont>();
+        font.setBold(isFolder);
+        return font;
     }
 
     return QStandardItemModel::data(index, role);
