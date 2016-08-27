@@ -51,6 +51,7 @@ private Q_SLOTS:
     void updateFilter();
 
 private:
+    void updateFilterBackground(bool isError);
     QModelIndex selectedIndex() const;
     Snippet *m_snippet;
     Kernel m_kernel;

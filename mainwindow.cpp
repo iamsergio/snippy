@@ -80,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_scheduleFilterTimer.setSingleShot(true);
     connect(&m_scheduleFilterTimer, &QTimer::timeout, this, &MainWindow::updateFilter);
 
+    connect(m_kernel.filterModel(), &SnippetProxyModel::filterHasErrorChanged,
+            this, &MainWindow::updateFilterBackground);
+
     // m_treeView->setRootIsDecorated(false); commented out because it's december, the tree should be decorated
     setSnippet(nullptr);
 }
@@ -191,9 +194,16 @@ void MainWindow::scheduleFilter()
 void MainWindow::updateFilter()
 {
     m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
-    if (!m_filterLineEdit->text().isEmpty()) {
+    if (!m_filterLineEdit->text().isEmpty())
         m_treeView->expandAll();
-    }
+}
+
+void MainWindow::updateFilterBackground(bool isError)
+{
+    if (isError)
+        m_filterLineEdit->setStyleSheet("QLineEdit { color: red; }");
+    else
+        m_filterLineEdit->setStyleSheet(QString());
 }
 
 QModelIndex MainWindow::selectedIndex() const

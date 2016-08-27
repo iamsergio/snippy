@@ -40,13 +40,48 @@ bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sour
     if (!sourceModel() || source_row < 0 || source_row >= sourceModel()->rowCount(source_parent))
         return false;
 
+    if (m_filterHasError)
+        return false;
 
     return accepts(sourceModel()->index(source_row, 0, source_parent));
 }
 
+static QStringList tokensFromString(const QString &str)
+{
+    // Example:
+    // input: m_text is "a & b & (!c | d)"
+    // output: { "a", "b", "c", "d" }
+
+    static QRegularExpression tokenSeparatorsRegex(R"(&|\||\(|\)|!| )");
+    return str.split(tokenSeparatorsRegex);
+}
+
+static QString normalizeTextForJS(const QString &token)
+{
+    QString result = token;
+    result.replace(":", QString());
+    return result;
+}
+
 bool SnippetProxyModel::accepts(const QModelIndex &idx) const
 {
-    return accepts(m_text, idx);
+    if (m_text.isEmpty())
+        return true;
+
+    QVector<bool> results;
+    results.reserve(m_searchTokens.size());
+    for (const QString &token : m_searchTokens) {
+        m_jsEngine.globalObject().setProperty(normalizeTextForJS(token), accepts(token, idx));
+    }
+
+    QJSValue result = m_jsEngine.evaluate(normalizeTextForJS(m_text));
+
+    if (result.isError()) {
+        qWarning() << "Filter has errors" << m_text << result.toString();
+        return false;
+    } else {
+        return result.toBool();
+    }
 }
 
 bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &idx) const
@@ -54,12 +89,8 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
     if (searchToken.isEmpty())
         return true;
 
-    QString filterText = searchToken;
-    bool foldersOnly = false;
-    if (searchToken.startsWith(':')) {
-        foldersOnly = true;
-        filterText.remove(0, 1);
-    }
+    QString filterText = normalizeTextForJS(searchToken);
+    const bool foldersOnly = searchToken.startsWith(':');
 
     filterText.replace(QRegularExpression("\\/*$"), QString());   // Remove trailling slash
     filterText.replace(QRegularExpression("\\\\*$"), QString()); // Remove trailling back-slash
@@ -84,7 +115,7 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
     if (isFolder) {
         const int numChildren = sourceModel()->rowCount(idx);
         for (int i = 0; i < numChildren; ++i) {
-            if (accepts(sourceModel()->index(i, 0)))
+            if (accepts(searchToken, sourceModel()->index(i, 0, idx)))
                 return true;
         }
     } else {
@@ -119,11 +150,61 @@ void SnippetProxyModel::setIsDeepSearch(bool is)
     }
 }
 
+void SnippetProxyModel::verifyExpressionValidity()
+{
+    if (m_text.isEmpty()) {
+        setFilterHasError(false);
+        return;
+    }
+
+    // Do an evaluation with dummy values just to verify syntax,
+    // so that UI can make the line edit red
+
+    QJSEngine engine;
+    bool canEvaluate = false;
+    for (const QString &token : m_searchTokens)
+    {
+        QString normalizedToken = normalizeTextForJS(token);
+        if (!normalizedToken.isEmpty()) {
+            engine.globalObject().setProperty(normalizedToken, true);
+            canEvaluate = true;
+        }
+    }
+
+    if (canEvaluate) {
+        QJSValue result = engine.evaluate(normalizeTextForJS(m_text));
+        setFilterHasError(result.isError());
+    } else {
+        setFilterHasError(true);
+    }
+}
+
 void SnippetProxyModel::setFilterText(QString text)
 {
     text = text.toLower();
     if (text != m_text) {
         m_text = text;
-        invalidateFilter();
+        m_searchTokens = tokensFromString(m_text);
+
+        for (const QString &token : m_searchTokens)
+            m_jsEngine.globalObject().deleteProperty(token);
+
+        verifyExpressionValidity();
+
+        if (!m_filterHasError)
+            invalidateFilter();
+    }
+}
+
+bool SnippetProxyModel::filterHasError() const
+{
+    return m_filterHasError;
+}
+
+void SnippetProxyModel::setFilterHasError(bool has)
+{
+    if (has != m_filterHasError) {
+        m_filterHasError = has;
+        emit filterHasErrorChanged(m_filterHasError);
     }
 }

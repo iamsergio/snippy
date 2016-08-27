@@ -24,20 +24,27 @@
 #define SNIPPY_SNIPPET_PROXY_MODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QJSEngine>
 
 class SnippetProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-public:
+public:    
     explicit SnippetProxyModel(QObject *parent = nullptr);
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
     bool isDeepSearch() const;
     void setIsDeepSearch(bool);
     void setFilterText(QString);
+    bool filterHasError() const;
+
 Q_SIGNALS:
     void countChanged();
+    void filterHasErrorChanged(bool);
+
 private:
+    void verifyExpressionValidity();
+    void setFilterHasError(bool);
     // Checks if we accept the row, given the line edit filter text, like: "foo & bar"
     bool accepts(const QModelIndex &idx) const;
 
@@ -46,6 +53,9 @@ private:
 
     bool m_deepSearch = false;
     QString m_text;
+    QStringList m_searchTokens;
+    mutable QJSEngine m_jsEngine;
+    bool m_filterHasError = false;
 };
 
 #endif
