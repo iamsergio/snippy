@@ -69,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_tagsLineEdit, &QLineEdit::textChanged, this, &MainWindow::saveNewTags);
     connect(m_textEdit, &QPlainTextEdit::textChanged, this, &MainWindow::saveNewContents);
+    connect(m_textEdit, &TextEdit::openExternallyRequested,
+            this, &MainWindow::openCurrentSnippetInEditor);
 
     QTimer::singleShot(0, &m_kernel, &Kernel::load);
     connect(m_treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::onSelectionChanged);
@@ -213,6 +215,33 @@ void MainWindow::updateFilter()
     m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
     if (!m_filterLineEdit->text().isEmpty())
         m_treeView->expandAll();
+}
+
+void MainWindow::openCurrentSnippetInEditor()
+{
+    if (!m_snippet) {
+        qWarning() << "No snippet selected";
+        return;
+    }
+
+    QString editorCommand = m_kernel.externalEditor();
+    if (editorCommand.isEmpty()) {
+        qWarning() << "No external editor specified.<br>";
+        qWarning() << "Please set the SNIPPY_EDITOR env variable. For example to"
+                   << "<b>\"kate %1\"</b>";
+        return;
+    }
+
+    const QString filename = m_snippet->absolutePath();
+
+    QString fullCommand = editorCommand;
+    if (editorCommand.contains(QLatin1String("%1"))) {
+        fullCommand = fullCommand.arg(filename);
+    } else {
+        fullCommand += " " + filename;
+    }
+
+    runCommand(fullCommand);
 }
 
 void MainWindow::openFileExplorer(QString path)

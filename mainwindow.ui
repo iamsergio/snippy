@@ -87,7 +87,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="m_textEdit">
+         <widget class="TextEdit" name="m_textEdit">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -194,6 +194,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>textedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

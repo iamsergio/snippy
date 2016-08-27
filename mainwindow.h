@@ -51,6 +51,7 @@ private Q_SLOTS:
     void updateFilter();
 
 private:
+    void openCurrentSnippetInEditor();
     void openFileExplorer(QString path);
     void openDataFolder();
     void updateFilterBackground(bool isError);
