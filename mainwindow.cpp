@@ -27,10 +27,26 @@
 #include <QInputDialog>
 #include <QFontDatabase>
 #include <QApplication>
+#include <QFileInfo>
+#include <QProcess>
+#include <QDebug>
 
 enum {
     FilterUpdateTimeout = 400 // ms
 };
+
+static void runCommand(const QString &command)
+{
+    auto proc = new QProcess();
+    QObject::connect(proc, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+                     [proc](int ret, QProcess::ExitStatus) {
+        if (ret != 0) {
+            qWarning() << "Error running" << proc->program() << proc->arguments();
+        }
+        proc->deleteLater();
+    });
+    proc->start(command);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -58,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::onSelectionChanged);
     connect(m_actionReload, &QAction::triggered, m_kernel.model(), &SnippetModel::load);
     connect(m_actionQuit, &QAction::triggered, qApp, &QApplication::quit);
+    connect(m_actionOpenDataFolder, &QAction::triggered, this, &MainWindow::openDataFolder);
 
     m_treeView->setHeaderHidden(true);
     setWindowTitle(tr("Snippy"));
@@ -196,6 +213,33 @@ void MainWindow::updateFilter()
     m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
     if (!m_filterLineEdit->text().isEmpty())
         m_treeView->expandAll();
+}
+
+void MainWindow::openFileExplorer(QString path)
+{
+    QFileInfo pathInfo(path);
+    path = pathInfo.absoluteFilePath(); // Cleanup path, remove double //
+
+    QString fileExplorerCommand = m_kernel.externalFileExplorer();
+    if (fileExplorerCommand.isEmpty()) {
+        qWarning() << "Please set the SNIPPY_FILE_EXPLORER env variable. For example to"
+                   << "<b>\"dolphin %1\"</b>";
+        return;
+    }
+
+    qDebug() << "Opening" << path << "...";
+    if (fileExplorerCommand.contains(QLatin1String("%1"))) {
+        fileExplorerCommand = fileExplorerCommand.arg(path);
+    } else {
+        fileExplorerCommand += ' ' + path;
+    }
+
+    runCommand(fileExplorerCommand);
+}
+
+void MainWindow::openDataFolder()
+{
+    openFileExplorer(m_kernel.model()->snippetDataFolder());
 }
 
 void MainWindow::updateFilterBackground(bool isError)

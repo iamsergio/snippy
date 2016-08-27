@@ -33,13 +33,16 @@ public:
     explicit Kernel(QObject *parent = nullptr);
     SnippetProxyModel *filterModel() const;
     SnippetModel *model() const;
-
+    QString externalEditor() const;
+    QString externalFileExplorer() const;
 public Q_SLOTS:
     void load();
 
 private:
     SnippetModel *const m_model;
     SnippetProxyModel *const m_filterModel;
+    const QString m_externalEditor;
+    const QString m_externalFileExplorer;
 };
 
 #endif

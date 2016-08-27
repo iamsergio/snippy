@@ -51,6 +51,8 @@ private Q_SLOTS:
     void updateFilter();
 
 private:
+    void openFileExplorer(QString path);
+    void openDataFolder();
     void updateFilterBackground(bool isError);
     QModelIndex selectedIndex() const;
     Snippet *m_snippet;

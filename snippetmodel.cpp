@@ -183,6 +183,11 @@ QString SnippetModel::emptySnippetTitle()
     return tr("Empty snippet");
 }
 
+QByteArray SnippetModel::snippetDataFolder() const
+{
+    return qgetenv("SNIPPY_FOLDER");
+}
+
 QStandardItem * SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
 {
     QString parentFolderPath;
@@ -280,7 +285,7 @@ QString SnippetModel::rootPath() const
 {
     static QString path;
     if (path.isEmpty()) {
-        QByteArray env_path = qgetenv("SNIPPY_FOLDER");
+        QByteArray env_path = snippetDataFolder();
         path = env_path.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) : QString::fromUtf8(env_path);
     }
 

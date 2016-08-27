@@ -26,6 +26,8 @@ Kernel::Kernel(QObject *parent)
     : QObject(parent)
     , m_model(new SnippetModel(this))
     , m_filterModel(new SnippetProxyModel(this))
+    , m_externalEditor(QString::fromUtf8(qgetenv("SNIPPY_EDITOR")))
+    , m_externalFileExplorer(QString::fromUtf8(qgetenv("SNIPPY_FILE_EXPLORER")))
 {
     m_filterModel->setSourceModel(m_model);
 }
@@ -43,4 +45,14 @@ SnippetModel *Kernel::model() const
 void Kernel::load()
 {
     m_model->load();
+}
+
+QString Kernel::externalEditor() const
+{
+    return m_externalEditor;
+}
+
+QString Kernel::externalFileExplorer() const
+{
+    return m_externalFileExplorer;
 }

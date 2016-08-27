@@ -53,6 +53,7 @@ public:
     QStandardItem *createFolder(const QString &name, const QModelIndex &parent);
 
     static QString emptySnippetTitle();
+    QByteArray snippetDataFolder() const;
 
 Q_SIGNALS:
     void loaded(int numSnippets, const QString &path);
