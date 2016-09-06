@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015 Sergio Martins <iamsergio@gmail.com>
+  Copyright (c) 2015-2016 Sergio Martins <iamsergio@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,22 @@ SnippetProxyModel::SnippetProxyModel(QObject *parent)
     connect(this, &SnippetProxyModel::rowsRemoved, this, &SnippetProxyModel::countChanged);
     connect(this, &SnippetProxyModel::modelReset, this, &SnippetProxyModel::countChanged);
     connect(this, &SnippetProxyModel::layoutChanged, this, &SnippetProxyModel::countChanged);
+
+    connect(this, &SnippetProxyModel::rowsRemoved, [this] (const QModelIndex &parent, int, int) {
+        if (parent.isValid()) {
+            // The model that sits on top of this one filters out parents with no children
+            // So trigger it's filterAcceptsRow() to run
+            emit dataChanged(parent, parent);
+        }
+    });
+
+    connect(this, &SnippetProxyModel::rowsInserted, [this] (const QModelIndex &parent, int, int) {
+        if (parent.isValid()) {
+            // The model that sits on top of this one filters out parents with no children
+            // So trigger it's filterAcceptsRow() to run
+            emit dataChanged(parent, parent);
+        }
+    });
 }
 
 bool SnippetProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -191,8 +207,10 @@ void SnippetProxyModel::setFilterText(QString text)
 
         verifyExpressionValidity();
 
-        if (!m_filterHasError)
+        if (!m_filterHasError) {
             invalidateFilter();
+            filterTextChanged(m_text);
+        }
     }
 }
 

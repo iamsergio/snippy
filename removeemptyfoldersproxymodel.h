@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015-2016 Sergio Martins <iamsergio@gmail.com>
+  Copyright (c) 2016 Sergio Martins <iamsergio@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,43 +20,27 @@
   without including the source code for Qt in the source distribution.
 */
 
-#ifndef SNIPPY_SNIPPET_PROXY_MODEL_H
-#define SNIPPY_SNIPPET_PROXY_MODEL_H
+#ifndef REMOVEEMPTYFOLDERSPROXYMODEL_H
+#define REMOVEEMPTYFOLDERSPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include <QJSEngine>
 
-class SnippetProxyModel : public QSortFilterProxyModel
+// Removes rows that are folders with no files in it
+// Doing this in a second filter pass is much simpler than doing it all in the same proxy model
+
+class RemoveEmptyFoldersProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-public:    
-    explicit SnippetProxyModel(QObject *parent = nullptr);
+public:
+    explicit RemoveEmptyFoldersProxyModel(QObject *parent = nullptr);
+    void setAcceptsEmptyParents(bool);
+
+protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
-    bool isDeepSearch() const;
-    void setIsDeepSearch(bool);
-    void setFilterText(QString);
-    bool filterHasError() const;
-
-Q_SIGNALS:
-    void filterTextChanged(const QString &text);
-    void countChanged();
-    void filterHasErrorChanged(bool);
-
 private:
-    void verifyExpressionValidity();
-    void setFilterHasError(bool);
-    // Checks if we accept the row, given the line edit filter text, like: "foo & bar"
-    bool accepts(const QModelIndex &idx) const;
+    bool m_acceptsEmptyParents = true;
 
-    // Checks if we accept the row, given a single search token, like "foo".
-    bool accepts(const QString &token, const QModelIndex &idx) const;
-
-    bool m_deepSearch = false;
-    QString m_text;
-    QStringList m_searchTokens;
-    mutable QJSEngine m_jsEngine;
-    bool m_filterHasError = false;
 };
 
 #endif

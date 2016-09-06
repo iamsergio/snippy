@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015 Sergio Martins <iamsergio@gmail.com>
+  Copyright (c) 2015-2016 Sergio Martins <iamsergio@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupUi(this);
     m_splitter->setSizes({100, 1000});
-    m_treeView->setModel(m_kernel.filterModel());
+    m_treeView->setModel(m_kernel.topLevelModel());
     connect(m_deepSearchCB, &QCheckBox::toggled, m_kernel.filterModel(), &SnippetProxyModel::setIsDeepSearch);
 
     connect(m_kernel.model(), &SnippetModel::loaded,
@@ -161,10 +161,10 @@ void MainWindow::createFolder()
     const QString &name = QInputDialog::getText(this, "Snippy", "Enter folder name");
     if (!name.isEmpty()) {
         QModelIndex selectedProxyIndex = selectedIndex();
-        QModelIndex selectedIndex = m_kernel.filterModel()->mapToSource(selectedProxyIndex);
+        QModelIndex selectedIndex = m_kernel.mapToSource(selectedProxyIndex);
         QStandardItem *newItem = m_kernel.model()->createFolder(name, selectedIndex);
         if (newItem) {
-            QModelIndex newProxyIndex = m_kernel.filterModel()->mapFromSource(newItem->index());
+            QModelIndex newProxyIndex = m_kernel.mapFromSource(newItem->index());
             m_treeView->expand(selectedProxyIndex);
             m_treeView->expand(newProxyIndex); // If we create a folder that already exists, expand it, since it has children probably
             m_treeView->scrollTo(newProxyIndex, QAbstractItemView::PositionAtCenter);
@@ -188,11 +188,11 @@ void MainWindow::createSnippet()
         }
     }
 
-    QModelIndex newIndex = m_kernel.model()->addSnippet(m_kernel.filterModel()->mapToSource(parentIndex));
+    QModelIndex newIndex = m_kernel.model()->addSnippet(m_kernel.mapToSource(parentIndex));
 
     if (newIndex.isValid()) {
         m_treeView->expand(parentIndex);
-        QModelIndex newProxyIndex = m_kernel.filterModel()->mapFromSource(newIndex);
+        QModelIndex newProxyIndex = m_kernel.mapFromSource(newIndex);
         m_treeView->scrollTo(newProxyIndex);
         m_treeView->selectionModel()->select(newProxyIndex, QItemSelectionModel::ClearAndSelect);
         m_treeView->edit(newProxyIndex);
@@ -202,7 +202,7 @@ void MainWindow::createSnippet()
 void MainWindow::deleteSnippet()
 {
     QModelIndex proxyIndex = selectedIndex();
-    m_kernel.model()->removeSnippet(m_kernel.filterModel()->mapToSource(proxyIndex));
+    m_kernel.model()->removeSnippet(m_kernel.mapToSource(proxyIndex));
 }
 
 void MainWindow::scheduleFilter()

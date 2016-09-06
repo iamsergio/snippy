@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015 Sergio Martins <iamsergio@gmail.com>
+  Copyright (c) 2015-2016 Sergio Martins <iamsergio@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 #include "snippetmodel.h"
 #include "snippetproxymodel.h"
 
+class RemoveEmptyFoldersProxyModel;
+
 class Kernel : public QObject
 {
     Q_OBJECT
@@ -33,14 +35,20 @@ public:
     explicit Kernel(QObject *parent = nullptr);
     SnippetProxyModel *filterModel() const;
     SnippetModel *model() const;
+    QAbstractProxyModel *topLevelModel() const; // The top-most model in the stack. Suitable for the tree view.
     QString externalEditor() const;
     QString externalFileExplorer() const;
+
+    QModelIndex mapToSource(const QModelIndex &);   // From top-most -> bottom-most
+    QModelIndex mapFromSource(const QModelIndex &); // From bottom-most -> top-most
+
 public Q_SLOTS:
     void load();
 
 private:
     SnippetModel *const m_model;
     SnippetProxyModel *const m_filterModel;
+    RemoveEmptyFoldersProxyModel *const m_cleanupProxy;
     const QString m_externalEditor;
     const QString m_externalFileExplorer;
 };

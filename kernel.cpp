@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015 Sergio Martins <iamsergio@gmail.com>
+  Copyright (c) 2015-2016 Sergio Martins <iamsergio@gmail.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,15 +21,22 @@
 */
 
 #include "kernel.h"
+#include "removeemptyfoldersproxymodel.h"
 
 Kernel::Kernel(QObject *parent)
     : QObject(parent)
     , m_model(new SnippetModel(this))
     , m_filterModel(new SnippetProxyModel(this))
+    , m_cleanupProxy(new RemoveEmptyFoldersProxyModel(this))
     , m_externalEditor(QString::fromUtf8(qgetenv("SNIPPY_EDITOR")))
     , m_externalFileExplorer(QString::fromUtf8(qgetenv("SNIPPY_FILE_EXPLORER")))
 {
     m_filterModel->setSourceModel(m_model);
+    m_cleanupProxy->setSourceModel(m_filterModel);
+    connect(m_filterModel, &SnippetProxyModel::filterTextChanged, [this] (const QString &text) {
+        // If there's no filter set then accept any empty folder
+        m_cleanupProxy->setAcceptsEmptyParents(text.isEmpty());
+    });
 }
 
 SnippetProxyModel *Kernel::filterModel() const
@@ -40,6 +47,11 @@ SnippetProxyModel *Kernel::filterModel() const
 SnippetModel *Kernel::model() const
 {
     return m_model;
+}
+
+QAbstractProxyModel *Kernel::topLevelModel() const
+{
+    return m_cleanupProxy;
 }
 
 void Kernel::load()
@@ -55,4 +67,16 @@ QString Kernel::externalEditor() const
 QString Kernel::externalFileExplorer() const
 {
     return m_externalFileExplorer;
+}
+
+QModelIndex Kernel::mapToSource(const QModelIndex &idx)
+{
+    Q_ASSERT(idx.model() == topLevelModel());
+    return filterModel()->mapToSource(topLevelModel()->mapToSource(idx));
+}
+
+QModelIndex Kernel::mapFromSource(const QModelIndex &idx)
+{
+    Q_ASSERT(idx.model() == model());
+    return topLevelModel()->mapFromSource(filterModel()->mapFromSource(idx));
 }
