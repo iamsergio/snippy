@@ -22,6 +22,7 @@
 
 #include "kernel.h"
 #include "removeemptyfoldersproxymodel.h"
+#include <QDebug>
 
 Kernel::Kernel(QObject *parent)
     : QObject(parent)
@@ -71,12 +72,24 @@ QString Kernel::externalFileExplorer() const
 
 QModelIndex Kernel::mapToSource(const QModelIndex &idx)
 {
-    Q_ASSERT(idx.model() == topLevelModel());
+    if (!idx.isValid())
+        return {};
+
+    if (idx.model() != topLevelModel()) {
+        qWarning() << "Wrong model for index" << idx.model()
+                   << "Expected" << topLevelModel();
+        Q_ASSERT(false);
+        return {};
+    }
+
     return filterModel()->mapToSource(topLevelModel()->mapToSource(idx));
 }
 
 QModelIndex Kernel::mapFromSource(const QModelIndex &idx)
 {
+    if (!idx.isValid())
+        return {};
+
     Q_ASSERT(idx.model() == model());
     return topLevelModel()->mapFromSource(filterModel()->mapFromSource(idx));
 }
