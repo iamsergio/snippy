@@ -44,7 +44,6 @@ bool RemoveEmptyFoldersProxyModel::filterAcceptsRow(int source_row,
         return true;
 
     auto sourceIndex = sourceModel()->index(source_row, 0, source_parent);
-    qDebug() << sourceIndex.model() << sourceIndex.data(SnippetModel::IsFolderRole).toBool();
     if (sourceIndex.data(SnippetModel::IsFolderRole).toBool())
         return sourceModel()->rowCount(sourceIndex) > 0;
 
