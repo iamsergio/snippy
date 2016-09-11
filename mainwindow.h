@@ -51,6 +51,7 @@ private Q_SLOTS:
     void updateFilter();
 
 private:
+    QModelIndex firstSnippet(const QModelIndex &) const;
     void openCurrentSnippetInEditor();
     void openFileExplorer(QString path);
     void openDataFolder();

@@ -212,9 +212,34 @@ void MainWindow::scheduleFilter()
 
 void MainWindow::updateFilter()
 {
-    m_kernel.filterModel()->setFilterText(m_filterLineEdit->text());
-    if (!m_filterLineEdit->text().isEmpty())
+    const QString text = m_filterLineEdit->text();
+    const bool hasText = !text.isEmpty();
+    m_kernel.filterModel()->setFilterText(text);
+    if (hasText)
         m_treeView->expandAll();
+
+    if (hasText && !selectedIndex().isValid()) {
+        QModelIndex index = firstSnippet(QModelIndex());
+        if (index.isValid()) {
+            m_treeView->selectionModel()->select(index, QItemSelectionModel::Select);
+        }
+    }
+}
+
+QModelIndex MainWindow::firstSnippet(const QModelIndex &index) const
+{
+    if (index.isValid() && !index.data(SnippetModel::IsFolderRole).toBool())
+        return index;
+
+    auto model = m_kernel.topLevelModel();
+    const int count = model->rowCount(index);
+    for (int row = 0; row < count; ++row) {
+        QModelIndex candidate = firstSnippet(model->index(row, 0, index));
+        if (candidate.isValid())
+            return candidate;
+    }
+
+    return {};
 }
 
 void MainWindow::openCurrentSnippetInEditor()
