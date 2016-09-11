@@ -72,11 +72,18 @@ static QStringList tokensFromString(const QString &str)
     return str.split(tokenSeparatorsRegex);
 }
 
-static QString normalizeTextForJS(const QString &token)
+static QString removeSpecialChars(const QString &token)
 {
     QString result = token;
     result.replace(":", QString());
     return result;
+}
+
+static QString normalizeTextForJS(const QString &token)
+{
+    QString result = token;
+    result.replace(".", QString());
+    return removeSpecialChars(result);
 }
 
 bool SnippetProxyModel::accepts(const QModelIndex &idx) const
@@ -105,7 +112,7 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
     if (searchToken.isEmpty())
         return true;
 
-    QString filterText = normalizeTextForJS(searchToken);
+    QString filterText = removeSpecialChars(searchToken);
     const bool foldersOnly = searchToken.startsWith(':');
 
     filterText.replace(QRegularExpression("\\/*$"), QString());   // Remove trailling slash
