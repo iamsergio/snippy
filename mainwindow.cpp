@@ -57,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent)
     setupUi(this);
     m_splitter->setSizes({100, 1000});
     m_treeView->setModel(m_kernel.topLevelModel());
-    connect(m_deepSearchCB, &QCheckBox::toggled, m_kernel.filterModel(), &SnippetProxyModel::setIsDeepSearch);
 
     connect(m_kernel.model(), &SnippetModel::loaded,
             [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path));});
@@ -98,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_filterLineEdit, &QLineEdit::textChanged, this, &MainWindow::scheduleFilter);
     m_scheduleFilterTimer.setSingleShot(true);
     connect(&m_scheduleFilterTimer, &QTimer::timeout, this, &MainWindow::updateFilter);
+    connect(m_deepSearchCB, &QCheckBox::toggled, this, &MainWindow::updateFilter);
 
     connect(m_kernel.filterModel(), &SnippetProxyModel::filterHasErrorChanged,
             this, &MainWindow::updateFilterBackground);
@@ -214,7 +214,9 @@ void MainWindow::updateFilter()
 {
     const QString text = m_filterLineEdit->text();
     const bool hasText = !text.isEmpty();
-    m_kernel.filterModel()->setFilterText(text);
+    auto filterModel = m_kernel.filterModel();
+    filterModel->setFilterText(text);
+    filterModel->setIsDeepSearch(m_deepSearchCB->isChecked());
     if (hasText)
         m_treeView->expandAll();
 
