@@ -75,7 +75,10 @@ static QStringList tokensFromString(const QString &str)
 static QString removeSpecialChars(const QString &token)
 {
     QString result = token;
-    result.replace(":", QString());
+
+    if (!token.isEmpty() && token[0] == QLatin1Char(':'))
+        result.remove(0, 1);
+
     return result;
 }
 
@@ -83,6 +86,7 @@ static QString normalizeTextForJS(const QString &token)
 {
     QString result = token;
     result.replace(".", QString());
+    result.replace(":", QString());
     return removeSpecialChars(result);
 }
 
