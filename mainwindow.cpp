@@ -21,6 +21,7 @@
 */
 
 #include "mainwindow.h"
+#include "syntaxhighlighter.h"
 
 #include <QTimer>
 #include <QItemSelection>
@@ -30,12 +31,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QDebug>
-
-#if defined(HAS_KF5_SYNTAX_HIGHLIGHTING)
-# include <KF5/SyntaxHighlighting/syntaxhighlighter.h>
-# include <KF5/SyntaxHighlighting/repository.h>
-# include <KF5/SyntaxHighlighting/definition.h>
-#endif
+#include <QSyntaxHighlighter>
 
 enum {
     FilterUpdateTimeout = 400 // ms
@@ -77,15 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_textEdit, &TextEdit::openExternallyRequested,
             this, &MainWindow::openCurrentSnippetInEditor);
 
-#if defined(HAS_KF5_SYNTAX_HIGHLIGHTING)
-    SyntaxHighlighting::Repository repo;
-    SyntaxHighlighting::Definition def;
-    def = repo.definitionForName(QStringLiteral("C++"));
-    if (!def.isValid())
-        qWarning("Unknown syntax.");
-    auto highlighter = new SyntaxHighlighting::SyntaxHighlighter(m_textEdit->document());
-    highlighter->setDefinition(def);
-#endif
+    m_highlighter = new SyntaxHighlighter(m_textEdit->document());
 
     QTimer::singleShot(0, &m_kernel, &Kernel::load);
     connect(m_treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::onSelectionChanged);
@@ -242,6 +230,8 @@ void MainWindow::updateFilter()
             m_treeView->selectionModel()->select(index, QItemSelectionModel::Select);
         }
     }
+
+    m_highlighter->setTokens(m_kernel.filterModel()->searchTokens());
 }
 
 QModelIndex MainWindow::firstSnippet(const QModelIndex &index) const

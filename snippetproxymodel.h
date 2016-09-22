@@ -38,6 +38,8 @@ public:
     void setFilterText(QString);
     bool filterHasError() const;
 
+    QStringList searchTokens() const;
+
 Q_SIGNALS:
     void filterTextChanged(const QString &text);
     void countChanged();

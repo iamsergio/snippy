@@ -29,6 +29,7 @@
 
 #include <QMainWindow>
 
+class SyntaxHighlighter;
 class QItemSelection;
 class QAction;
 class QTimer;
@@ -58,6 +59,7 @@ private:
     void updateFilterBackground(bool isError);
     QModelIndex selectedIndex() const;
     Snippet *m_snippet;
+    SyntaxHighlighter *m_highlighter = nullptr;
     Kernel m_kernel;
     QAction *m_newFolderAction;
     QAction *m_newAction;

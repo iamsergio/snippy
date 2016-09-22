@@ -230,6 +230,11 @@ bool SnippetProxyModel::filterHasError() const
     return m_filterHasError;
 }
 
+QStringList SnippetProxyModel::searchTokens() const
+{
+    return m_searchTokens;
+}
+
 void SnippetProxyModel::setFilterHasError(bool has)
 {
     if (has != m_filterHasError) {
