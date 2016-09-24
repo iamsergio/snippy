@@ -54,7 +54,6 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
         expression.setCaseSensitivity(Qt::CaseInsensitive);
         int index = text.indexOf(expression);
         while (index >= 0) {
-            qDebug() << "Index=" << index << token;
             int length = expression.matchedLength();
             setFormat(index, length, myClassFormat);
             index = text.indexOf(expression, index + length);
