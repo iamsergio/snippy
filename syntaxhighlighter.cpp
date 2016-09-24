@@ -51,6 +51,7 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
             continue;
 
         QRegExp expression(token);
+        expression.setCaseSensitivity(Qt::CaseInsensitive);
         int index = text.indexOf(expression);
         while (index >= 0) {
             qDebug() << "Index=" << index << token;
