@@ -57,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
     qApp->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
     setupUi(this);
+
+
     m_splitter->setSizes({100, 1000});
     m_treeView->setModel(m_kernel.topLevelModel());
 
