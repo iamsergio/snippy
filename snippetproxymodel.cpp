@@ -85,9 +85,11 @@ static QString removeSpecialChars(const QString &token)
 static QString normalizeTextForJS(const QString &token)
 {
     QString result = token;
+    // TODO: use regexp instead
     result.replace(".", QString());
     result.replace(":", QString());
     result.replace("+", QString());
+    result.replace("-", QString());
     return removeSpecialChars(result);
 }
 
