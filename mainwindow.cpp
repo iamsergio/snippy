@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
         statusBar()->showMessage(QStringLiteral("Showing %1 snippets").arg(m_kernel.filterModel()->rowCount())); // FIXME: Needs a recursive count
     });*/
 
+    m_tagsLineEdit->setStyleSheet(QStringLiteral("QLineEdit { font-weight: bold; }"));
     connect(m_tagsLineEdit, &QLineEdit::textChanged, this, &MainWindow::saveNewTags);
     connect(m_textEdit, &QPlainTextEdit::textChanged, this, &MainWindow::saveNewContents);
     connect(m_textEdit, &TextEdit::openExternallyRequested,

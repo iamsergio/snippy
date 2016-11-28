@@ -23,12 +23,16 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QStyleFactory>
 
 int main(int argv, char **argc)
 {
     QApplication app(argv, argc);
+    QFont f(QStringLiteral("DejaVu Sans Mono"));
+    f.setPixelSize(12);
+    app.setFont(f);
     app.setWindowIcon(QIcon(":/img/snippy.png"));
-    app.setStyleSheet("file:///:/style.qss");
+    app.setStyle(QStyleFactory::create(QStringLiteral("fusion")));
     MainWindow window;
     window.show();
     return app.exec();

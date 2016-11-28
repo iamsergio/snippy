@@ -1,9 +1,0 @@
-QWidget {
-    font-family: "DejaVu Sans Mono";
-    font-size: 12px;
-}
-
-QLineEdit
-{
-    font-weight: bold;
-}
