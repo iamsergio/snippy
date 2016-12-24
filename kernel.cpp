@@ -28,16 +28,16 @@ Kernel::Kernel(QObject *parent)
     : QObject(parent)
     , m_model(new SnippetModel(this))
     , m_filterModel(new SnippetProxyModel(this))
-    , m_cleanupProxy(new RemoveEmptyFoldersProxyModel(this))
+    //, m_cleanupProxy(new RemoveEmptyFoldersProxyModel(this))
     , m_externalEditor(QString::fromUtf8(qgetenv("SNIPPY_EDITOR")))
     , m_externalFileExplorer(QString::fromUtf8(qgetenv("SNIPPY_FILE_EXPLORER")))
 {
     m_filterModel->setSourceModel(m_model);
-    m_cleanupProxy->setSourceModel(m_filterModel);
+    /*m_cleanupProxy->setSourceModel(m_filterModel);
     connect(m_filterModel, &SnippetProxyModel::filterTextChanged, [this] (const QString &text) {
         // If there's no filter set then accept any empty folder
         m_cleanupProxy->setAcceptsEmptyParents(text.isEmpty());
-    });
+    });*/
 }
 
 SnippetProxyModel *Kernel::filterModel() const
@@ -52,7 +52,8 @@ SnippetModel *Kernel::model() const
 
 QAbstractProxyModel *Kernel::topLevelModel() const
 {
-    return m_cleanupProxy;
+    //return m_cleanupProxy;
+    return m_filterModel;
 }
 
 void Kernel::load()

@@ -26,7 +26,7 @@
 #include "snippetmodel.h"
 #include "snippetproxymodel.h"
 
-class RemoveEmptyFoldersProxyModel;
+//class RemoveEmptyFoldersProxyModel;
 
 class Kernel : public QObject
 {
@@ -48,7 +48,7 @@ public Q_SLOTS:
 private:
     SnippetModel *const m_model;
     SnippetProxyModel *const m_filterModel;
-    RemoveEmptyFoldersProxyModel *const m_cleanupProxy;
+    //RemoveEmptyFoldersProxyModel *const m_cleanupProxy;
     const QString m_externalEditor;
     const QString m_externalFileExplorer;
 };
