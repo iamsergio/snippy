@@ -39,7 +39,7 @@ public:
     QString externalEditor() const;
     QString externalFileExplorer() const;
 
-    QModelIndex mapToSource(const QModelIndex &);   // From top-most -> bottom-most
+    QModelIndex mapToSource(QModelIndex);   // From top-most -> bottom-most
     QModelIndex mapFromSource(const QModelIndex &); // From bottom-most -> top-most
 
 public Q_SLOTS:

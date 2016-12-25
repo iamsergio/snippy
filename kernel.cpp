@@ -71,19 +71,9 @@ QString Kernel::externalFileExplorer() const
     return m_externalFileExplorer;
 }
 
-QModelIndex Kernel::mapToSource(const QModelIndex &idx)
+QModelIndex Kernel::mapToSource(QModelIndex idx)
 {
-    if (!idx.isValid())
-        return {};
-
-    if (idx.model() != topLevelModel()) {
-        qWarning() << "Wrong model for index" << idx.model()
-                   << "Expected" << topLevelModel();
-        Q_ASSERT(false);
-        return {};
-    }
-
-    return filterModel()->mapToSource(topLevelModel()->mapToSource(idx));
+    return m_filterModel->mapToSource(idx);
 }
 
 QModelIndex Kernel::mapFromSource(const QModelIndex &idx)
