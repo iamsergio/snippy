@@ -78,9 +78,5 @@ QModelIndex Kernel::mapToSource(QModelIndex idx)
 
 QModelIndex Kernel::mapFromSource(const QModelIndex &idx)
 {
-    if (!idx.isValid())
-        return {};
-
-    Q_ASSERT(idx.model() == model());
-    return topLevelModel()->mapFromSource(filterModel()->mapFromSource(idx));
+    return m_filterModel->mapFromSource(idx);
 }
