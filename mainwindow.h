@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QString &initialFilter, QWidget *parent = nullptr);
     void setSnippet(Snippet *);
 
 private Q_SLOTS:

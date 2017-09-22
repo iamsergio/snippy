@@ -50,7 +50,7 @@ static void runCommand(const QString &command)
     proc->start(command);
 }
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
     : QMainWindow(parent)
     , m_snippet(nullptr)
 {
@@ -100,8 +100,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_actionExpandAll, &QAction::triggered, m_treeView, &QTreeView::expandAll);
 
     m_filterLineEdit->setFocus();
-
     connect(m_filterLineEdit, &QLineEdit::textChanged, this, &MainWindow::scheduleFilter);
+    m_filterLineEdit->setText(initialFilter);
     m_scheduleFilterTimer.setSingleShot(true);
     connect(&m_scheduleFilterTimer, &QTimer::timeout, this, &MainWindow::updateFilter);
     connect(m_deepSearchCB, &QCheckBox::toggled, this, &MainWindow::updateFilter);

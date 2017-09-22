@@ -25,6 +25,16 @@
 #include <QApplication>
 #include <QStyleFactory>
 
+static QString getArg()
+{
+    QStringList args = qApp->arguments();
+    if (args.size() <= 1)
+        return QString();
+
+    args.removeAt(0);
+    return args.join(" ");
+}
+
 int main(int argv, char **argc)
 {
     QApplication app(argv, argc);
@@ -33,7 +43,9 @@ int main(int argv, char **argc)
     app.setFont(f);
     app.setWindowIcon(QIcon(":/img/snippy.png"));
     app.setStyle(QStyleFactory::create(QStringLiteral("fusion")));
-    MainWindow window;
+
+    QString initialFilter = getArg();
+    MainWindow window(initialFilter);
     window.show();
     return app.exec();
 }
