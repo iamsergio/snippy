@@ -31,6 +31,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QDebug>
+#include <QWindow>
 #include <QSyntaxHighlighter>
 
 enum {
@@ -108,6 +109,15 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
     connect(m_kernel.filterModel(), &SnippetProxyModel::filterHasErrorChanged,
             this, &MainWindow::updateFilterBackground);
+
+    create();
+
+    QWindow *window = windowHandle();
+    connect(window, &QWindow::activeChanged, window, [this, window] {
+        if (window->isActive()) {
+            m_filterLineEdit->setFocus();
+        }
+    });
 
     // m_treeView->setRootIsDecorated(false); commented out because it's december, the tree should be decorated
     setSnippet(nullptr);
