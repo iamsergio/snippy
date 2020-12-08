@@ -41,6 +41,7 @@ void SyntaxHighlighter::setTokens(const QStringList &tokens)
 
 void SyntaxHighlighter::highlightBlock(const QString &text)
 {
+#if !defined(OPTION_QT6)
     QTextCharFormat myClassFormat;
     myClassFormat.setFontWeight(QFont::Bold);
     myClassFormat.setForeground(Qt::darkBlue);
@@ -59,4 +60,5 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
             index = text.indexOf(expression, index + length);
         }
     }
+#endif
 }
