@@ -12,3 +12,9 @@ qrc_resources.cpp
 /.kdev4
 .qmake.stash
 moc_predefs.h
+*_autogen
+cmake_install.cmake
+.ninja*
+CMakeFiles
+CMakeCache.txt
+build.ninja
