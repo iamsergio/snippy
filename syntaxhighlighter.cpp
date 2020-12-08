@@ -60,5 +60,7 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
             index = text.indexOf(expression, index + length);
         }
     }
+#else
+#warning PORT ME
 #endif
 }
