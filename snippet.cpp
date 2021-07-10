@@ -32,7 +32,7 @@ Snippet::Snippet(const QString &absolutePath, QObject *parent)
 {
     m_timer.setSingleShot(true);
     QObject::connect(&m_timer, &QTimer::timeout, this, &Snippet::saveToFile);
-    loadFromFile();
+    //loadFromFile();
 }
 
 void Snippet::setTitle(const QString &title)
