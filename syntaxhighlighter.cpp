@@ -61,6 +61,8 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
         }
     }
 #else
-#warning PORT ME
+# ifndef Q_OS_WIN
+#  warning PORT ME
+# endif
 #endif
 }
