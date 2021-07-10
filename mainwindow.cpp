@@ -79,7 +79,6 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
     m_highlighter = new SyntaxHighlighter(m_textEdit->document());
 
-    QTimer::singleShot(0, &m_kernel, &Kernel::load);
     connect(m_treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::onSelectionChanged);
     connect(m_actionReload, &QAction::triggered, m_kernel.model(), &SnippetModel::load);
     connect(m_actionQuit, &QAction::triggered, qApp, &QApplication::quit);
@@ -87,6 +86,9 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
     m_treeView->setHeaderHidden(true);
     setWindowTitle(tr("Snippy"));
+
+    auto action = m_toolBar->addAction("Load Data");
+    connect(action, &QAction::triggered, &m_kernel, &Kernel::load);
 
     m_newFolderAction = m_toolBar->addAction(qApp->style()->standardIcon(QStyle::SP_FileDialogNewFolder), "New Folder");
     connect(m_newFolderAction, &QAction::triggered, this, &MainWindow::createFolder);

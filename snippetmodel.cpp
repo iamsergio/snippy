@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QUuid>
+#include <QElapsedTimer>
 
 SnippetModel::SnippetModel(QObject *parent)
     : QStandardItemModel(parent)
@@ -116,11 +117,17 @@ Snippet* SnippetModel::snippet(const QModelIndex &index) const
 
 void SnippetModel::load()
 {
+    QElapsedTimer t;
+    t.start();
+
     beginResetModel();
     clear();
     m_numSnippets = 0;
     import(QDir(rootPath()), invisibleRootItem());
     endResetModel();
+
+    qDebug() << "Finished loading. Took" << t.elapsed()
+             << "ms";
 
     emit loaded(m_numSnippets, rootPath());
 }
