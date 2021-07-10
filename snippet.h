@@ -32,13 +32,13 @@ class Snippet : public QObject
 {
     Q_OBJECT
 public:
-    explicit Snippet(QObject *parent = nullptr);
+    explicit Snippet(const QString &absoluteFileName,
+                     QObject *parent = nullptr);
 
     QString title() const;
     void setTitle(const QString &);
 
     QString absolutePath() const;
-    void setAbsolutePath(const QString &);
 
     QString contents() const;
     void setContents(const QString &);
@@ -49,15 +49,15 @@ public:
     void setTags(const QStringList &tags);
     bool isValid() const;
 
-    void loadFromFile(const QString &filePath);
+    void loadFromFile();
     bool saveToFile() const;
 
 private:
     void scheduleSave();
+    const QString m_absolutePath;
     QTimer m_timer;
     QString m_title;
     QString m_contents;
-    QString m_absolutePath;
     QStringList m_tags;
 };
 
