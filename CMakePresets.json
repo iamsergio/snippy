@@ -19,7 +19,8 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON",
-                "OPTION_QT6" : "ON"
+                "OPTION_QT6" : "ON",
+                "CMAKE_PREFIX_PATH" : "$env{QT6_DIR}"
             }
         }
     ]
