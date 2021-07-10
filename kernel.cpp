@@ -22,7 +22,9 @@
 
 #include "kernel.h"
 #include "removeemptyfoldersproxymodel.h"
+
 #include <QDebug>
+#include <QApplication>
 
 Kernel::Kernel(QObject *parent)
     : QObject(parent)
@@ -59,6 +61,7 @@ QAbstractProxyModel *Kernel::topLevelModel() const
 void Kernel::load()
 {
     m_model->load();
+    qApp->quit();
 }
 
 QString Kernel::externalEditor() const
