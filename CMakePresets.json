@@ -10,6 +10,17 @@
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON"
             }
+        },
+        {
+            "name": "dev6",
+            "displayName": "dev6",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build-dev6",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON",
+                "OPTION_QT6" : "ON"
+            }
         }
     ]
 }
