@@ -26,10 +26,13 @@
 #include <QTextStream>
 #include <QDebug>
 
-Snippet::Snippet(QObject *parent) : QObject(parent)
+Snippet::Snippet(const QString &absolutePath, QObject *parent)
+    : QObject(parent)
+    , m_absolutePath(absolutePath)
 {
     m_timer.setSingleShot(true);
     QObject::connect(&m_timer, &QTimer::timeout, this, &Snippet::saveToFile);
+    loadFromFile();
 }
 
 void Snippet::setTitle(const QString &title)
@@ -48,14 +51,6 @@ QString Snippet::title() const
 QString Snippet::absolutePath() const
 {
     return m_absolutePath;
-}
-
-void Snippet::setAbsolutePath(const QString &path)
-{
-    if (path != m_absolutePath) {
-        m_absolutePath = path;
-        scheduleSave();
-    }
 }
 
 QString Snippet::contents() const
@@ -104,15 +99,13 @@ enum {
     TagsLine = 1
 };
 
-void Snippet::loadFromFile(const QString &filePath)
+void Snippet::loadFromFile()
 {
-    QFile file(filePath);
+    QFile file(m_absolutePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << Q_FUNC_INFO << "Failed to open " << filePath << " due to " << file.errorString();
+        qWarning() << Q_FUNC_INFO << "Failed to open " << m_absolutePath << " due to " << file.errorString();
         return;
     }
-
-    m_absolutePath = filePath;
 
     int i = 0;
     while (!file.atEnd()) {
@@ -128,6 +121,11 @@ void Snippet::loadFromFile(const QString &filePath)
 
         ++i;
     }
+
+    if (!isValid()) {
+        qWarning() << Q_FUNC_INFO << "Invalid snippet" << m_absolutePath;
+    }
+
 }
 
 bool Snippet::saveToFile() const

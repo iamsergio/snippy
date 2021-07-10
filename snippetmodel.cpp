@@ -169,8 +169,7 @@ QModelIndex SnippetModel::addSnippet(const QModelIndex &parentIndex)
 
     QUuid uuid = QUuid::createUuid();
     const QString filename = uuid.toString().replace("{", "").replace("}", "") + ".snip";
-    Snippet *snip = new Snippet(this);
-    snip->setAbsolutePath(parentFolderPath + "/" + filename);
+    auto snip = new Snippet(parentFolderPath + "/" + filename, this);
     snip->setTitle("Empty snippet");
     snip->saveToFile();
     QStandardItem *item = addSnippet(snip, parentItem);
@@ -261,15 +260,8 @@ void SnippetModel::import(QDir dir, QStandardItem *parentItem)
     dir.setNameFilters({"*.snip"});
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     foreach (const QString &filename, dir.entryList()) {
-        Snippet *snippet = new Snippet(this);
         const QString &absoluteFileName = dir.absoluteFilePath(filename);
-        snippet->loadFromFile(absoluteFileName);
-        if (!snippet->isValid()) {
-            qWarning() << Q_FUNC_INFO << "Invalid snippet" << absoluteFileName;
-            delete snippet;
-            continue;
-        }
-
+        auto snippet = new Snippet(absoluteFileName, this);
         addSnippet(snippet, parentItem);
     }
 
