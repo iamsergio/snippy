@@ -62,9 +62,7 @@ impl Snippet {
         }
 
         let contents = fs::read_to_string(&snippet.absolute_path);
-        if let Err(e) = contents {
-            return Err(e);
-        }
+        contents?;
 
         Ok(snippet)
     }
