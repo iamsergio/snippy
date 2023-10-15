@@ -23,6 +23,7 @@
 use std::fs;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
+use std::path::Path;
 
 /// Represents a single snippet
 /// Allows to load and save a single snippet from disk
@@ -51,30 +52,36 @@ impl Snippet {
         }
     }
 
-    pub fn load_from_file(path: &str) -> io::Result<Snippet> {
-        let mut snippet = Snippet::new(path);
-
-        let file = File::open(path)?;
+    pub fn load_from_file(&mut self) -> io::Result<()> {
+        let file = File::open(&self.absolute_path)?;
         let reader = BufReader::new(file);
         let mut lines = reader.lines();
 
         if let Some(Ok(line1)) = lines.next() {
-            snippet.title = line1;
+            self.title = line1;
             if let Some(Ok(tags_str)) = lines.next() {
-                snippet.tags = tags_str
+                self.tags = tags_str
                     .split(';')
                     .map(String::from)
                     .filter(|s| !s.is_empty())
                     .collect();
                 let rest: Vec<String> = lines.filter_map(|line| line.ok()).collect();
-                snippet.contents = rest.join("\n");
+                self.contents = rest.join("\n");
             }
         }
 
-        let contents = fs::read_to_string(&snippet.absolute_path);
+        let contents = fs::read_to_string(&self.absolute_path);
         contents?;
 
-        Ok(snippet)
+        Ok(())
+    }
+
+    pub fn filename(&self) -> &str {
+        let f = Path::new(&self.absolute_path)
+            .file_name()
+            .expect("Expected filename");
+
+        return f.to_str().unwrap();
     }
 
     pub fn is_valid(&self) -> bool {
@@ -108,6 +115,25 @@ impl SnippetFolder {
                     self.snippets.push(snippet);
                 }
             }
+
+            self.snippets
+                .sort_by(|s1, s2| s1.absolute_path.cmp(&s2.absolute_path));
+
+            self.sub_folders
+                .sort_by(|s1, s2| s1.root_path.cmp(&s2.root_path))
+        }
+
+        Ok(())
+    }
+
+    /// Loads the snippets, recursively
+    pub fn load_snippets(&mut self) -> io::Result<()> {
+        for snippet in &mut self.snippets {
+            snippet.load_from_file()?;
+        }
+
+        for sub_folder in &mut self.sub_folders {
+            sub_folder.load_snippets()?;
         }
 
         Ok(())
@@ -128,6 +154,16 @@ impl SnippetFolder {
 
         names.sort();
         return names;
+    }
+
+    pub fn snippet_count_recursive(&self) -> usize {
+        let mut count = self.snippets.len();
+
+        for sub_folder in &self.sub_folders {
+            count += sub_folder.snippet_count_recursive();
+        }
+
+        return count;
     }
 }
 
@@ -150,12 +186,12 @@ mod tests {
     #[test]
     fn tst_read_snippet() {
         let filename = test_snippet_filename("1.snip");
-        let empty_snippet = Snippet::new(&filename);
+        let mut snippet = Snippet::new(&filename);
 
-        assert_eq!(filename, empty_snippet.absolute_path);
-        assert!(!empty_snippet.is_valid());
+        assert_eq!(filename, snippet.absolute_path);
+        assert!(!snippet.is_valid());
 
-        let snippet = Snippet::load_from_file(&filename).expect("Failed to load from file");
+        snippet.load_from_file().expect("Failed to load from file");
         assert!(snippet.is_valid());
 
         assert_eq!(snippet.title, "mytitle");
@@ -203,5 +239,25 @@ mod tests {
             .collect();
 
         assert_eq!(stripped_names, expected_names);
+        assert_eq!(root.snippet_count_recursive(), 12);
+    }
+
+    #[test]
+    fn tst_load_snippets() {
+        let mut root = SnippetFolder::new(test_snippets_root().as_str());
+        let _ = root.load_names().unwrap();
+        let _ = root.load_snippets().unwrap();
+
+        let first = &root.snippets[0];
+        assert_eq!(first.filename(), "1.snip");
+        assert_eq!(first.title, "mytitle");
+        assert_eq!(first.tags, ["a", "b", "c", "d"]);
+        assert_eq!(first.contents, "contents\ncontents\ncontents");
+
+        let first_sub = &root.sub_folders[0].snippets[0];
+        assert_eq!(first_sub.filename(), "1.1.snip");
+        assert_eq!(first_sub.title, "mytitle11");
+        assert_eq!(first_sub.tags, ["a", "b", "c", "d"]);
+        assert_eq!(first_sub.contents, "contents11\ncontents11\ncontents11");
     }
 }
