@@ -52,7 +52,7 @@ SnippetModel *Kernel::model() const
 
 QAbstractProxyModel *Kernel::topLevelModel() const
 {
-    //return m_cleanupProxy;
+    // return m_cleanupProxy;
     return m_filterModel;
 }
 

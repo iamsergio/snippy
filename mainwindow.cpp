@@ -43,11 +43,11 @@ static void runCommand(const QString &command)
     auto proc = new QProcess();
     QObject::connect(proc, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
                      [proc](int ret, QProcess::ExitStatus) {
-        if (ret != 0) {
-            qWarning() << "Error running" << proc->program() << proc->arguments();
-        }
-        proc->deleteLater();
-    });
+                         if (ret != 0) {
+                             qWarning() << "Error running" << proc->program() << proc->arguments();
+                         }
+                         proc->deleteLater();
+                     });
     proc->start(command);
 }
 
@@ -60,11 +60,11 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
     setupUi(this);
 
 
-    m_splitter->setSizes({100, 1000});
+    m_splitter->setSizes({ 100, 1000 });
     m_treeView->setModel(m_kernel.topLevelModel());
 
     connect(m_kernel.model(), &SnippetModel::loaded,
-            [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path));});
+            [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path)); });
 
     /*connect(m_kernel.filterModel(), &SnippetProxyModel::countChanged,
     [this] {
@@ -125,8 +125,8 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
 void MainWindow::setSnippet(Snippet *snippet)
 {
-    //if (m_snippet == snippet)
-        //return;
+    // if (m_snippet == snippet)
+    // return;
 
     m_snippet = snippet;
 
@@ -143,7 +143,7 @@ void MainWindow::setSnippet(Snippet *snippet)
     m_delAction->setEnabled(snippet);
 }
 
-void MainWindow::onSelectionChanged(const QItemSelection &selection, const QItemSelection &/*deselection*/)
+void MainWindow::onSelectionChanged(const QItemSelection &selection, const QItemSelection & /*deselection*/)
 {
     const QModelIndexList indexes = selection.indexes();
     if (indexes.isEmpty()) {
@@ -156,7 +156,7 @@ void MainWindow::onSelectionChanged(const QItemSelection &selection, const QItem
     if (isFolder) {
         setSnippet(nullptr);
     } else {
-        Snippet *snippet = indexes.first().data(SnippetModel::SnippetRole).value<Snippet*>();
+        Snippet *snippet = indexes.first().data(SnippetModel::SnippetRole).value<Snippet *>();
         setSnippet(snippet);
     }
 }

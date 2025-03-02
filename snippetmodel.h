@@ -33,7 +33,6 @@ class SnippetModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
-
     enum Role {
         SnippetRole = Qt::UserRole + 1,
         IsFolderRole,
@@ -46,7 +45,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool isFolder(const QModelIndex &index) const;
-    Snippet* snippet(const QModelIndex &index) const;
+    Snippet *snippet(const QModelIndex &index) const;
     void load();
     void removeSnippet(const QModelIndex &index);
     QModelIndex addSnippet(const QModelIndex &parent);
@@ -59,9 +58,9 @@ Q_SIGNALS:
     void loaded(int numSnippets, const QString &path);
 
 private:
-    QStandardItem* addSnippet(Snippet *, QStandardItem *parentItem);
+    QStandardItem *addSnippet(Snippet *, QStandardItem *parentItem);
     QStandardItem *addFolder(const QString &name, const QString &absolutePath, QStandardItem *parentItem);
-    QStandardItem * itemForName(const QString &name, const QModelIndex &parentIndex);
+    QStandardItem *itemForName(const QString &name, const QModelIndex &parentIndex);
     void import(QDir, QStandardItem *parentItem);
     QString rootPath() const;
 

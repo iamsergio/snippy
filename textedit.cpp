@@ -42,4 +42,3 @@ void TextEdit::contextMenuEvent(QContextMenuEvent *ev)
 
     menu->exec(ev->globalPos());
 }
-

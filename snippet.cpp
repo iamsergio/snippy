@@ -125,7 +125,6 @@ void Snippet::loadFromFile()
     if (!isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid snippet" << m_absolutePath;
     }
-
 }
 
 bool Snippet::saveToFile() const
@@ -140,7 +139,9 @@ bool Snippet::saveToFile() const
 #ifndef OPTION_QT6
     out.setCodec("UTF-8");
 #endif
-    out << m_title << "\n" << tagsString() << "\n" << m_contents;
+    out << m_title << "\n"
+        << tagsString() << "\n"
+        << m_contents;
 
     qDebug() << Q_FUNC_INFO << "Saved" << m_absolutePath;
     return true;

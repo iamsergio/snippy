@@ -28,7 +28,6 @@
 SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
-
 }
 
 void SyntaxHighlighter::setTokens(const QStringList &tokens)
@@ -61,8 +60,8 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
         }
     }
 #else
-# ifndef Q_OS_WIN
-#  warning PORT ME
-# endif
+#ifndef Q_OS_WIN
+#warning PORT ME
+#endif
 #endif
 }

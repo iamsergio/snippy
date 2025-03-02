@@ -40,7 +40,6 @@ protected:
 
 private:
     bool m_acceptsEmptyParents = true;
-
 };
 
 #endif

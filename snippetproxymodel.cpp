@@ -34,7 +34,7 @@ SnippetProxyModel::SnippetProxyModel(QObject *parent)
     connect(this, &SnippetProxyModel::modelReset, this, &SnippetProxyModel::countChanged);
     connect(this, &SnippetProxyModel::layoutChanged, this, &SnippetProxyModel::countChanged);
 
-    connect(this, &SnippetProxyModel::rowsRemoved, [this] (const QModelIndex &parent, int, int) {
+    connect(this, &SnippetProxyModel::rowsRemoved, [this](const QModelIndex &parent, int, int) {
         if (parent.isValid()) {
             // The model that sits on top of this one filters out parents with no children
             // So trigger it's filterAcceptsRow() to run
@@ -42,7 +42,7 @@ SnippetProxyModel::SnippetProxyModel(QObject *parent)
         }
     });
 
-    connect(this, &SnippetProxyModel::rowsInserted, [this] (const QModelIndex &parent, int, int) {
+    connect(this, &SnippetProxyModel::rowsInserted, [this](const QModelIndex &parent, int, int) {
         if (parent.isValid()) {
             // The model that sits on top of this one filters out parents with no children
             // So trigger it's filterAcceptsRow() to run
@@ -122,7 +122,7 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
     QString filterText = removeSpecialChars(searchToken);
     const bool foldersOnly = searchToken.startsWith(':');
 
-    filterText.replace(QRegularExpression("\\/*$"), QString());   // Remove trailling slash
+    filterText.replace(QRegularExpression("\\/*$"), QString()); // Remove trailling slash
     filterText.replace(QRegularExpression("\\\\*$"), QString()); // Remove trailling back-slash
 
     QModelIndex parent = idx.parent();
@@ -149,7 +149,7 @@ bool SnippetProxyModel::accepts(const QString &searchToken, const QModelIndex &i
                 return true;
         }
     } else {
-        Snippet *snippet = idx.data(SnippetModel::SnippetRole).value<Snippet*>();
+        Snippet *snippet = idx.data(SnippetModel::SnippetRole).value<Snippet *>();
         if (title == SnippetModel::emptySnippetTitle())
             return true;
 
@@ -192,8 +192,7 @@ void SnippetProxyModel::verifyExpressionValidity()
 
     QJSEngine engine;
     bool canEvaluate = false;
-    for (const QString &token : m_searchTokens)
-    {
+    for (const QString &token : m_searchTokens) {
         QString normalizedToken = normalizeTextForJS(token);
         if (!normalizedToken.isEmpty()) {
             engine.globalObject().setProperty(normalizedToken, true);

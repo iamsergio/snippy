@@ -108,10 +108,10 @@ bool SnippetModel::isFolder(const QModelIndex &index) const
     return item ? item->data(IsFolderRole).toBool() : false;
 }
 
-Snippet* SnippetModel::snippet(const QModelIndex &index) const
+Snippet *SnippetModel::snippet(const QModelIndex &index) const
 {
     QStandardItem *item = itemFromIndex(index);
-    return item ? item->data(SnippetRole).value<Snippet*>() : nullptr;
+    return item ? item->data(SnippetRole).value<Snippet *>() : nullptr;
 }
 
 void SnippetModel::load()
@@ -139,7 +139,7 @@ void SnippetModel::removeSnippet(const QModelIndex &index)
         return;
     }
 
-    Snippet *snippet = index.data(SnippetModel::SnippetRole).value<Snippet*>();
+    Snippet *snippet = index.data(SnippetModel::SnippetRole).value<Snippet *>();
     if (!snippet) {
         qWarning() << Q_FUNC_INFO << "Refusing to delete null snippet";
         return;
@@ -187,7 +187,7 @@ QByteArray SnippetModel::snippetDataFolder() const
     return qgetenv("SNIPPY_FOLDER");
 }
 
-QStandardItem * SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
+QStandardItem *SnippetModel::createFolder(const QString &name, const QModelIndex &parentIndex)
 {
     QString parentFolderPath;
     QStandardItem *parentItem;
@@ -221,7 +221,7 @@ QStandardItem * SnippetModel::createFolder(const QString &name, const QModelInde
     return newItem;
 }
 
-QStandardItem* SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentItem)
+QStandardItem *SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentItem)
 {
     QStandardItem *fileItem = new QStandardItem();
     fileItem->setData(QVariant::fromValue(snippet), SnippetRole);
@@ -231,7 +231,7 @@ QStandardItem* SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentI
     return fileItem;
 }
 
-QStandardItem* SnippetModel::addFolder(const QString &foldername,
+QStandardItem *SnippetModel::addFolder(const QString &foldername,
                                        const QString &absolutePath, QStandardItem *parentItem)
 {
     QStandardItem *folderItem = new QStandardItem(foldername);
@@ -257,7 +257,7 @@ QStandardItem *SnippetModel::itemForName(const QString &name, const QModelIndex 
 
 void SnippetModel::import(QDir dir, QStandardItem *parentItem)
 {
-    dir.setNameFilters({"*.snip"});
+    dir.setNameFilters({ "*.snip" });
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     foreach (const QString &filename, dir.entryList()) {
         const QString &absoluteFileName = dir.absoluteFilePath(filename);
