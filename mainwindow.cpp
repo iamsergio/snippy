@@ -64,7 +64,12 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
     m_treeView->setModel(m_kernel.topLevelModel());
 
     connect(m_kernel.model(), &SnippetModel::loaded,
-            [this](int num, const QString &path) { statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path)); });
+            [this](int num, const QString &path) { //
+                if (qApp->arguments().contains(QLatin1String("--quit-after-loading"))) {
+                    qApp->quit();
+                }
+                statusBar()->showMessage(QStringLiteral("Loaded %1 snippets from %2").arg(num).arg(path));
+            });
 
     /*connect(m_kernel.filterModel(), &SnippetProxyModel::countChanged,
     [this] {

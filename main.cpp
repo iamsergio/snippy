@@ -24,6 +24,7 @@
 
 #include <QApplication>
 #include <QStyleFactory>
+#include <QCommandLineParser>
 
 static QString getArg()
 {
@@ -44,8 +45,20 @@ int main(int argv, char **argc)
     app.setWindowIcon(QIcon(":/img/snippy.png"));
     app.setStyle(QStyleFactory::create(QStringLiteral("fusion")));
 
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Snippy");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOption(QCommandLineOption("quit-after-loading", "Quit immediately after loading (for benchmark purposes)"));
+    parser.process(app);
+
     QString initialFilter = getArg();
     MainWindow window(initialFilter);
     window.show();
+
+    if (parser.isSet("quit-after-loading")) {
+        QMetaObject::invokeMethod(&app, "quit", Qt::QueuedConnection);
+    }
+
     return app.exec();
 }
