@@ -1,27 +1,43 @@
 {
-    "version": 2,
-    "configurePresets": [
-        {
-            "name": "dev",
-            "displayName": "dev",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-dev",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON"
-            }
-        },
-        {
-            "name": "dev6",
-            "displayName": "dev6",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-dev6",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON",
-                "OPTION_QT6" : "ON",
-                "CMAKE_PREFIX_PATH" : "$env{QT6_DIR}"
-            }
-        }
-    ]
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "base",
+      "displayName": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "dev",
+      "inherits": "base",
+      "displayName": "dev",
+      "binaryDir": "${sourceDir}/build-dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "dev6",
+      "inherits": "base",
+      "displayName": "dev6",
+      "binaryDir": "${sourceDir}/build-dev6",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "OPTION_QT6": "ON",
+        "CMAKE_PREFIX_PATH": "$env{QT6_DIR}"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "displayName": "release",
+      "binaryDir": "${sourceDir}/build-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    }
+  ]
 }
