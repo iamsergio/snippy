@@ -19,3 +19,5 @@ CMakeFiles
 CMakeCache.txt
 build-*
 /rust/target/
+.cache
+compile_commands.json
