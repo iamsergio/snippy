@@ -31,12 +31,13 @@
       }
     },
     {
-      "name": "release",
+      "name": "release6",
       "inherits": "base",
-      "displayName": "release",
-      "binaryDir": "${sourceDir}/build-release",
+      "displayName": "release6",
+      "binaryDir": "${sourceDir}/build-release6",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "OPTION_QT6": "ON"
       }
     }
   ]

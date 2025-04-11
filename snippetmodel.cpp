@@ -116,8 +116,8 @@ Snippet *SnippetModel::snippet(const QModelIndex &index) const
 
 void SnippetModel::load()
 {
-    beginResetModel();
     clear();
+    beginResetModel();
     m_numSnippets = 0;
     import(QDir(rootPath()), invisibleRootItem());
     endResetModel();
