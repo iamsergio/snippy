@@ -11,16 +11,16 @@
       }
     },
     {
-      "name": "dev",
+      "name": "dev5",
       "inherits": "base",
-      "displayName": "dev",
+      "displayName": "dev5",
       "binaryDir": "${sourceDir}/build-dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "dev6",
+      "name": "dev",
       "inherits": "base",
       "displayName": "dev6",
       "binaryDir": "${sourceDir}/build-dev6",
@@ -31,7 +31,7 @@
       }
     },
     {
-      "name": "release6",
+      "name": "release",
       "inherits": "base",
       "displayName": "release6",
       "binaryDir": "${sourceDir}/build-release6",

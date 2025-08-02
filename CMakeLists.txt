@@ -15,7 +15,7 @@ SET(SNIPPY_SRCS
     resources.qrc
     )
 
-option(OPTION_QT6 "Build against Qt6" OFF)
+option(OPTION_QT6 "Build against Qt6" ON)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -34,5 +34,4 @@ else()
     find_package(Qt5Widgets REQUIRED)
     find_package(Qt5Qml REQUIRED)
     target_link_libraries(snippy Qt5::Widgets Qt5::Qml)
-endif()    
- 
+endif()
