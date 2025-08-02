@@ -23,7 +23,7 @@
 #include "syntaxhighlighter.h"
 
 #include <QDebug>
-#include <QRegExp>
+#include <QRegularExpression>
 
 SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
@@ -40,7 +40,6 @@ void SyntaxHighlighter::setTokens(const QStringList &tokens)
 
 void SyntaxHighlighter::highlightBlock(const QString &text)
 {
-#if !defined(OPTION_QT6)
     QTextCharFormat myClassFormat;
     myClassFormat.setFontWeight(QFont::Bold);
     myClassFormat.setForeground(Qt::darkBlue);
@@ -50,18 +49,11 @@ void SyntaxHighlighter::highlightBlock(const QString &text)
         if (token.isEmpty())
             continue;
 
-        QRegExp expression(token);
-        expression.setCaseSensitivity(Qt::CaseInsensitive);
-        int index = text.indexOf(expression);
-        while (index >= 0) {
-            int length = expression.matchedLength();
-            setFormat(index, length, myClassFormat);
-            index = text.indexOf(expression, index + length);
+        QRegularExpression expression(token, QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatchIterator iterator = expression.globalMatch(text);
+        while (iterator.hasNext()) {
+            QRegularExpressionMatch match = iterator.next();
+            setFormat(match.capturedStart(), match.capturedLength(), myClassFormat);
         }
     }
-#else
-#ifndef Q_OS_WIN
-#warning PORT ME
-#endif
-#endif
 }
