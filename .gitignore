@@ -22,3 +22,4 @@ build-*
 .cache
 compile_commands.json
 .qt-commander/
+/.mcp.json

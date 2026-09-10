@@ -57,4 +57,14 @@ if (SNIPPY_BUILD_QT_COMMANDER)
     # "ui_scanner.h" in the library's UI *scanner* as a uic form and fails looking
     # for scanner.ui. Only AUTOMOC (set by the library itself) is needed.
     set_target_properties(qt-injector qt-commander-lib PROPERTIES AUTOUIC OFF AUTORCC OFF)
+
+    # An absolute uv: a desktop-launched Claude does not necessarily have ~/.cargo/bin on PATH.
+    find_program(uv_program NAMES uv)
+    if (NOT uv_program)
+        message(WARNING "uv not found; .mcp.json will fall back to PATH lookup at MCP startup")
+        set(uv_program uv)
+    endif()
+
+    # Claude Code reads .mcp.json from the source root, not the build tree.
+    configure_file(${CMAKE_SOURCE_DIR}/.mcp.json.in ${CMAKE_SOURCE_DIR}/.mcp.json @ONLY)
 endif()

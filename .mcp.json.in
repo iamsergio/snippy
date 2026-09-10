@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "qt-commander": {
+      "command": "@uv_program@",
+      "args": [
+        "run",
+        "--frozen",
+        "--directory", "@CMAKE_SOURCE_DIR@",
+        "--project", "@qtcommander_dir@",
+        "qt-commander-mcp"
+      ]
+    }
+  }
+}

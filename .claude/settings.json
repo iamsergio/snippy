@@ -1,0 +1,6 @@
+{
+  "enabledMcpjsonServers": ["qt-commander"],
+  "permissions": {
+    "allow": ["mcp__qt-commander"]
+  }
+}
