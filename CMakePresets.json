@@ -15,7 +15,8 @@
       "name": "dev",
       "inherits": "base",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SNIPPY_BUILD_QT_COMMANDER": "ON"
       }
     },
     {
