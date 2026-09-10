@@ -175,8 +175,9 @@ bool SnippetProxyModel::isDeepSearch() const
 void SnippetProxyModel::setIsDeepSearch(bool is)
 {
     if (is != m_deepSearch) {
+        beginFilterChange();
         m_deepSearch = is;
-        invalidateFilter();
+        endFilterChange();
     }
 }
 
@@ -221,7 +222,8 @@ void SnippetProxyModel::setFilterText(QString text)
         verifyExpressionValidity();
 
         if (!m_filterHasError) {
-            invalidateFilter();
+            beginFilterChange();
+            endFilterChange();
             filterTextChanged(m_text);
         }
     }
