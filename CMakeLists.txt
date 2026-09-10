@@ -61,8 +61,7 @@ if (SNIPPY_BUILD_QT_COMMANDER)
     # An absolute uv: a desktop-launched Claude does not necessarily have ~/.cargo/bin on PATH.
     find_program(uv_program NAMES uv)
     if (NOT uv_program)
-        message(WARNING "uv not found; .mcp.json will fall back to PATH lookup at MCP startup")
-        set(uv_program uv)
+        message(FATAL_ERROR "uv not found; required to run the qt-commander MCP server (install uv and ensure it's on PATH)")
     endif()
 
     # Claude Code reads .mcp.json from the source root, not the build tree.
