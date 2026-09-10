@@ -1,0 +1,3 @@
+[submodule "3rdparty/QtCommander"]
+	path = 3rdparty/QtCommander
+	url = ssh://git@kdab:222/KDAB/QtCommander.git
