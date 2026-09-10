@@ -136,9 +136,6 @@ bool Snippet::saveToFile() const
     }
 
     QTextStream out(&file);
-#ifndef OPTION_QT6
-    out.setCodec("UTF-8");
-#endif
     out << m_title << "\n"
         << tagsString() << "\n"
         << m_contents;
