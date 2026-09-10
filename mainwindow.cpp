@@ -84,6 +84,8 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
     m_highlighter = new SyntaxHighlighter(m_textEdit->document());
 
+    connect(m_actionToggleMarkdownPreview, &QAction::toggled, this, &MainWindow::toggleMarkdownPreview);
+
     QTimer::singleShot(0, &m_kernel, &Kernel::load);
     connect(m_treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::onSelectionChanged);
     connect(m_actionReload, &QAction::triggered, m_kernel.model(), &SnippetModel::load);
@@ -146,6 +148,15 @@ void MainWindow::setSnippet(Snippet *snippet)
     m_textEdit->setEnabled(snippet);
     m_tagsLineEdit->setEnabled(snippet);
     m_delAction->setEnabled(snippet);
+    m_actionToggleMarkdownPreview->setEnabled(snippet);
+
+    if (m_actionToggleMarkdownPreview->isChecked()) {
+        if (snippet) {
+            m_markdownPreview->setMarkdown(m_textEdit->toPlainText());
+        } else {
+            m_actionToggleMarkdownPreview->setChecked(false);
+        }
+    }
 }
 
 void MainWindow::onSelectionChanged(const QItemSelection &selection, const QItemSelection & /*deselection*/)
@@ -176,6 +187,16 @@ void MainWindow::saveNewContents()
 {
     if (m_snippet)
         m_snippet->setContents(m_textEdit->toPlainText());
+}
+
+void MainWindow::toggleMarkdownPreview(bool enabled)
+{
+    if (enabled) {
+        m_markdownPreview->setMarkdown(m_textEdit->toPlainText());
+    }
+
+    m_markdownPreview->setVisible(enabled);
+    m_textEdit->setVisible(!enabled);
 }
 
 void MainWindow::createFolder()

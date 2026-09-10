@@ -93,6 +93,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QTextBrowser" name="m_markdownPreview">
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -136,7 +143,14 @@
     </property>
     <addaction name="m_actionOpenDataFolder"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="m_actionToggleMarkdownPreview"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
    <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -191,6 +205,17 @@
   <action name="m_actionOpenDataFolder">
    <property name="text">
     <string>Open data folder ...</string>
+   </property>
+  </action>
+  <action name="m_actionToggleMarkdownPreview">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Markdown Preview</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
    </property>
   </action>
  </widget>

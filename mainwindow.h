@@ -50,6 +50,7 @@ private Q_SLOTS:
     void deleteSnippet();
     void scheduleFilter();
     void updateFilter();
+    void toggleMarkdownPreview(bool enabled);
 
 private:
     QModelIndex firstSnippet(const QModelIndex &) const;
