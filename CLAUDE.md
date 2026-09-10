@@ -90,9 +90,6 @@ folders.
 engine purely so the line edit can be tinted red. While `m_filterHasError` is set,
 `filterAcceptsRow()` rejects everything. Filter updates are debounced 400 ms in `MainWindow`.
 
-When changing filter state on either proxy, call `beginFilterChange()` **before** mutating the state
-and `endFilterChange()` after — `invalidateFilter()` is deprecated in Qt 6.10.
-
 ### UI
 
 `MainWindow` privately inherits `Ui::MainWindow`, so widget members (`m_treeView`,

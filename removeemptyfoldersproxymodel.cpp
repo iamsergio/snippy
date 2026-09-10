@@ -32,8 +32,9 @@ RemoveEmptyFoldersProxyModel::RemoveEmptyFoldersProxyModel(QObject *parent)
 void RemoveEmptyFoldersProxyModel::setAcceptsEmptyParents(bool accepts)
 {
     if (accepts != m_acceptsEmptyParents) {
+        beginFilterChange();
         m_acceptsEmptyParents = accepts;
-        invalidateFilter();
+        endFilterChange();
     }
 }
 
