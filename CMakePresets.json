@@ -4,6 +4,7 @@
     {
       "name": "base",
       "displayName": "base",
+      "binaryDir": "${sourceDir}/build-${presetName}",
       "hidden": true,
       "generator": "Ninja",
       "cacheVariables": {
@@ -11,33 +12,17 @@
       }
     },
     {
-      "name": "dev5",
+      "name": "dev",
       "inherits": "base",
-      "displayName": "dev5",
-      "binaryDir": "${sourceDir}/build-dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "dev",
-      "inherits": "base",
-      "displayName": "dev6",
-      "binaryDir": "${sourceDir}/build-dev6",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "OPTION_QT6": "ON",
-        "CMAKE_PREFIX_PATH": "$env{QT6_DIR}"
-      }
-    },
-    {
       "name": "release",
       "inherits": "base",
-      "displayName": "release6",
-      "binaryDir": "${sourceDir}/build-release6",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTION_QT6": "ON"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
     }
   ]
