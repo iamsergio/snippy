@@ -1,0 +1,40 @@
+Checks: >
+  clang-analyzer-*,
+  bugprone-*,
+  readability-*,
+  modernize-*,
+  performance-*,
+  cppcoreguidelines-*,
+  cert-*,
+  misc-*,
+  hicpp-*,
+  -modernize-use-trailing-return-type,
+  -readability-braces-around-statements,
+  -readability-identifier-length,
+  -readability-implicit-bool-conversion,
+  -hicpp-braces-around-statements,
+  -cppcoreguidelines-owning-memory,
+  -readability-function-cognitive-complexity,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-type-const-cast,
+  -readability-magic-numbers,
+  -readability-convert-member-functions-to-static,
+  -readability-make-member-function-const,
+  -misc-const-correctness,
+  -misc-non-private-member-variables-in-classes,
+  -misc-include-cleaner,
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  - key: readability-magic-numbers.IgnoredIntegerValues
+    value: '0;1'
+  - key: readability-magic-numbers.IgnoredFloatingPointValues
+    value: '0.0'
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: '^(it)$'
+  - key: cppcoreguidelines-avoid-do-while.IgnoreMacros
+    value: '1'

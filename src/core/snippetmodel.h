@@ -44,6 +44,7 @@ public:
     explicit SnippetModel(QObject *parent = nullptr);
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    QHash<int, QByteArray> roleNames() const override;
     bool isFolder(const QModelIndex &index) const;
     Snippet *snippet(const QModelIndex &index) const;
     void load();

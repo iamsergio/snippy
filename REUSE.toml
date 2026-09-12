@@ -1,0 +1,31 @@
+version = 1
+SPDX-PackageName = "Snippy"
+SPDX-PackageDownloadLocation = "https://github.com/iamsergio/snippy"
+
+# Config/build files that can't (or don't) carry the GPL-2.0-or-later header used in
+# every .cpp/.h file.
+[[annotations]]
+path = [
+    "CMakeLists.txt",
+    "src/CMakeLists.txt",
+    "src/core/CMakeLists.txt",
+    "src/widgets/CMakeLists.txt",
+    "src/qml/CMakeLists.txt",
+    "CMakePresets.json",
+    ".gitignore",
+    ".gitmodules",
+    ".mcp.json.in",
+    "code.code-workspace",
+    ".clang-format",
+    ".clang-tidy",
+    ".cmake-format.yaml",
+    ".qmllint.ini",
+    ".clangd",
+    "install.sh",
+    "resources.qrc",
+    "src/widgets/mainwindow.ui",
+    ".github/workflows/build.yml",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015-2026 Sergio Martins <iamsergio@gmail.com>"
+SPDX-License-Identifier = "GPL-2.0-or-later"
