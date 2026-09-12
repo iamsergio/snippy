@@ -77,6 +77,20 @@ QC.ApplicationWindow {
         }
     }
 
+    QC.Dialog {
+        id: deleteConfirmDialog
+        title: "Delete snippet"
+        anchors.centerIn: parent
+        modal: true
+        standardButtons: QC.Dialog.Yes | QC.Dialog.No
+
+        QC.Label {
+            text: "Delete \"%1\"? This cannot be undone.".arg(Backend.currentTitle)
+        }
+
+        onAccepted: Backend.deleteCurrent()
+    }
+
     header: QC.ToolBar {
         RowLayout {
             anchors.fill: parent
@@ -100,7 +114,7 @@ QC.ApplicationWindow {
                 // empty), so leaving this enabled for a folder just clears the selection
                 // with no visible effect instead of actually deleting anything.
                 enabled: Backend.hasSelection && !Backend.currentIsFolder
-                onClicked: Backend.deleteCurrent()
+                onClicked: deleteConfirmDialog.open()
             }
             QC.ToolButton {
                 text: "Reload"
