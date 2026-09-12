@@ -96,7 +96,10 @@ QC.ApplicationWindow {
             }
             QC.ToolButton {
                 text: "Delete"
-                enabled: Backend.hasSelection
+                // SnippetModel::removeSnippet() refuses folders outright (they may not be
+                // empty), so leaving this enabled for a folder just clears the selection
+                // with no visible effect instead of actually deleting anything.
+                enabled: Backend.hasSelection && !Backend.currentIsFolder
                 onClicked: Backend.deleteCurrent()
             }
             QC.ToolButton {
