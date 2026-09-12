@@ -133,6 +133,13 @@ QC.ApplicationWindow {
                 anchors.fill: parent
                 clip: true
                 model: Backend.model
+
+                // Without this, the column's width is its widest delegate's implicit
+                // (unelided) content width, so one long title pushes the column past the
+                // viewport and every row's "elide: Text.ElideRight" never has to do anything.
+                columnWidthProvider: function () {
+                    return width;
+                }
                 selectionModel: treeSelection
 
                 delegate: QC.TreeViewDelegate {
