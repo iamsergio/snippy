@@ -94,6 +94,11 @@ bool SnippetModel::setData(const QModelIndex &index, const QVariant &value, int 
         snip->setTitle(text);
     }
 
+    // Qt::DisplayRole for both branches above is derived (from FolderNameRole, or from
+    // snip->title() directly) rather than stored as item data, so item->setData() only
+    // announced the underlying role changing, not the display text views actually bind to.
+    emit dataChanged(index, index, {Qt::DisplayRole});
+
     return true;
 }
 

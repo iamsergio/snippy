@@ -97,6 +97,9 @@ Snippet *QmlBackend::currentSnippet() const
 
 QString QmlBackend::currentTitle() const
 {
+    if (currentIsFolder())
+        return m_currentIndex.data(SnippetModel::FolderNameRole).toString();
+
     Snippet *snippet = currentSnippet();
     return snippet ? snippet->title() : QString();
 }
@@ -120,6 +123,14 @@ void QmlBackend::setCurrentIndex(const QModelIndex &proxyIndex)
 
     m_currentIndex = proxyIndex;
     emit currentChanged();
+}
+
+void QmlBackend::setCurrentTitle(const QString &title)
+{
+    if (!m_currentIndex.isValid())
+        return;
+
+    m_kernel.model()->setData(m_kernel.mapToSource(m_currentIndex), title, Qt::EditRole);
 }
 
 void QmlBackend::setCurrentTags(const QString &text)

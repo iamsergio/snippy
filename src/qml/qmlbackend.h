@@ -67,6 +67,7 @@ public:
     QString currentContents() const;
 
     Q_INVOKABLE void setCurrentIndex(const QModelIndex &proxyIndex);
+    Q_INVOKABLE void setCurrentTitle(const QString &);
     Q_INVOKABLE void setCurrentTags(const QString &);
     Q_INVOKABLE void setCurrentContents(const QString &);
     Q_INVOKABLE QModelIndex createSnippet();

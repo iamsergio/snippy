@@ -78,6 +78,29 @@ QC.ApplicationWindow {
     }
 
     QC.Dialog {
+        id: renameDialog
+        title: "Rename"
+        anchors.centerIn: parent
+        modal: true
+        standardButtons: QC.Dialog.Ok | QC.Dialog.Cancel
+
+        QC.TextField {
+            id: renameField
+            width: 240
+        }
+
+        onOpened: {
+            renameField.text = Backend.currentTitle;
+            renameField.selectAll();
+            renameField.forceActiveFocus();
+        }
+        onAccepted: {
+            if (renameField.text.length > 0)
+                Backend.setCurrentTitle(renameField.text);
+        }
+    }
+
+    QC.Dialog {
         id: deleteConfirmDialog
         title: "Delete snippet"
         anchors.centerIn: parent
@@ -107,6 +130,11 @@ QC.ApplicationWindow {
                     treeView.expandToIndex(idx);
                     treeSelection.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect);
                 }
+            }
+            QC.ToolButton {
+                text: "Rename"
+                enabled: Backend.hasSelection
+                onClicked: renameDialog.open()
             }
             QC.ToolButton {
                 text: "Delete"
