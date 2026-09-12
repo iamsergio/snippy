@@ -14,13 +14,15 @@ QC.ApplicationWindow {
     visible: true
     width: 900
     height: 640
-    // Below this, the header RowLayout's fixed-width children (buttons, filter field,
-    // checkbox) no longer all fit and the excess is silently pushed off-window instead of
-    // wrapping or shrinking — a QWidget layout would refuse to shrink past its size hint
-    // the same way, so mirror that here instead of teaching the toolbar to wrap.
+    // Below this, the header RowLayout's fixed-width children (the toolbar buttons) no
+    // longer all fit and the excess is silently pushed off-window instead of wrapping or
+    // shrinking — a QWidget layout would refuse to shrink past its size hint the same way,
+    // so mirror that here instead of teaching the toolbar to wrap.
     minimumWidth: 730
     minimumHeight: 400
     title: "Snippy"
+
+    property bool markdownPreviewEnabled: false
 
     Component.onCompleted: filterField.forceActiveFocus()
 
@@ -114,6 +116,40 @@ QC.ApplicationWindow {
         onAccepted: Backend.deleteCurrent()
     }
 
+    menuBar: QC.MenuBar {
+        QC.Menu {
+            title: "&File"
+            QC.MenuItem {
+                text: "&Reload"
+                onTriggered: Backend.reload()
+            }
+            QC.MenuItem {
+                text: "Expand All"
+                onTriggered: treeView.expandRecursively()
+            }
+            QC.MenuItem {
+                text: "&Quit"
+                onTriggered: Qt.quit()
+            }
+        }
+        QC.Menu {
+            title: "&View"
+            QC.MenuItem {
+                text: "&Markdown Preview"
+                checkable: true
+                checked: window.markdownPreviewEnabled
+                onToggled: window.markdownPreviewEnabled = checked
+            }
+        }
+        QC.Menu {
+            title: "Tools"
+            QC.MenuItem {
+                text: "Open data folder ..."
+                onTriggered: Backend.openDataFolder()
+            }
+        }
+    }
+
     header: QC.ToolBar {
         RowLayout {
             anchors.fill: parent
@@ -144,11 +180,6 @@ QC.ApplicationWindow {
                 enabled: Backend.hasSelection && !Backend.currentIsFolder
                 onClicked: deleteConfirmDialog.open()
             }
-            QC.ToolButton {
-                text: "Reload"
-                onClicked: Backend.reload()
-            }
-
             Item {
                 Layout.fillWidth: true
             }
@@ -214,10 +245,24 @@ QC.ApplicationWindow {
 
                     QC.TextArea {
                         id: contentsArea
+                        visible: !window.markdownPreviewEnabled
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         wrapMode: TextEdit.NoWrap
                         onEditingFinished: Backend.setCurrentContents(text)
+                    }
+
+                    QC.ScrollView {
+                        visible: window.markdownPreviewEnabled
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        QC.Label {
+                            width: parent.width
+                            text: contentsArea.text
+                            textFormat: Text.MarkdownText
+                            wrapMode: Text.Wrap
+                        }
                     }
                 }
             }

@@ -27,6 +27,20 @@
 
 #include <QStandardItem>
 #include <QTimer>
+#include <QProcess>
+#include <QFileInfo>
+#include <QDebug>
+
+static void runCommand(const QString &command)
+{
+    auto proc = new QProcess();
+    QObject::connect(proc, &QProcess::finished, proc, [proc](int ret, QProcess::ExitStatus) {
+        if (ret != 0)
+            qWarning() << "Error running" << proc->program() << proc->arguments();
+        proc->deleteLater();
+    });
+    proc->start(command);
+}
 
 QmlBackend::QmlBackend(QObject *parent)
     : QObject(parent)
@@ -177,4 +191,23 @@ void QmlBackend::deleteCurrent()
 void QmlBackend::reload()
 {
     m_kernel.model()->load();
+}
+
+void QmlBackend::openDataFolder()
+{
+    const QString command = m_kernel.externalFileExplorer();
+    if (command.isEmpty()) {
+        qWarning() << "Please set the SNIPPY_FILE_EXPLORER env variable. For example to"
+                   << "\"dolphin %1\"";
+        return;
+    }
+
+    const QString path = QFileInfo(QString::fromUtf8(m_kernel.model()->snippetDataFolder())).absoluteFilePath();
+    QString fullCommand = command;
+    if (fullCommand.contains(QLatin1String("%1")))
+        fullCommand = fullCommand.arg(path);
+    else
+        fullCommand += ' ' + path;
+
+    runCommand(fullCommand);
 }

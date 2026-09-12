@@ -74,6 +74,7 @@ public:
     Q_INVOKABLE QModelIndex createFolder(const QString &name);
     Q_INVOKABLE void deleteCurrent();
     Q_INVOKABLE void reload();
+    Q_INVOKABLE void openDataFolder();
 
 Q_SIGNALS:
     void filterTextChanged(const QString &);
