@@ -14,6 +14,12 @@ QC.ApplicationWindow {
     visible: true
     width: 900
     height: 640
+    // Below this, the header RowLayout's fixed-width children (buttons, filter field,
+    // checkbox) no longer all fit and the excess is silently pushed off-window instead of
+    // wrapping or shrinking — a QWidget layout would refuse to shrink past its size hint
+    // the same way, so mirror that here instead of teaching the toolbar to wrap.
+    minimumWidth: 730
+    minimumHeight: 400
     title: "Snippy"
 
     Component.onCompleted: filterField.forceActiveFocus()
