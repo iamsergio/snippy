@@ -221,9 +221,11 @@ QC.ApplicationWindow {
                     selectionModel: treeSelection
 
                     delegate: QC.TreeViewDelegate {
+                        id: treeDelegate
+
                         contentItem: QC.Label {
-                            text: model.display
-                            font.bold: model.isFolder
+                            text: treeDelegate.model.display
+                            font.bold: treeDelegate.model.isFolder
                             elide: Text.ElideRight
                         }
                     }
@@ -285,14 +287,14 @@ QC.ApplicationWindow {
                 palette.text: Backend.filterHasError ? "red" : window.palette.text
                 onTextChanged: {
                     Backend.filterText = text;
-                    applyFilter();
+                    window.applyFilter();
                 }
             }
             QC.CheckBox {
                 text: "Search in contents"
                 onToggled: {
                     Backend.deepSearch = checked;
-                    applyFilter();
+                    window.applyFilter();
                 }
             }
         }
