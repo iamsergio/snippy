@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build (${{ matrix.preset }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [dev, release]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.10.*'
+        modules: 'qt5compat qtdeclarative'
+
+    - name: Install Ninja
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build
+
+    # SNIPPY_BUILD_QT_COMMANDER needs the QtCommander submodule + uv, neither of which CI
+    # sets up; the dev preset otherwise defaults it ON.
+    - name: Configure CMake
+      run: cmake --preset=${{ matrix.preset }} -DSNIPPY_BUILD_QT_COMMANDER=OFF
+
+    - name: Build
+      run: cmake --build build-${{ matrix.preset }}
+
+    - name: Run qmllint
+      if: matrix.preset == 'dev'
+      run: ninja -C build-dev all_qmllint

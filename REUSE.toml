@@ -24,6 +24,7 @@ path = [
     "install.sh",
     "resources.qrc",
     "src/widgets/mainwindow.ui",
+    ".github/workflows/build.yml",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2015-2026 Sergio Martins <iamsergio@gmail.com>"
