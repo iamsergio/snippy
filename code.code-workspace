@@ -9,7 +9,8 @@
       "llvm-vs-code-extensions.vscode-clangd",
       "ms-vscode.cmake-tools",
       "KDAB.qttests",
-      "KDAB.dap"
+      "KDAB.dap",
+      "theqtcompany.qt-qml"
     ],
     "unwantedRecommendations": [
       "ms-azuretools.vscode-docker"
@@ -46,7 +47,12 @@
     "git.blame.ignoreWhitespace": true,
     "files.associations": {
       "*.code-workspace.template": "json"
-    }
+    },
+    "qt-qml.qmlls.customExePath": "/pub_data/installed/Qt/6.10.2/gcc_64/bin/qmlls",
+    "qt-qml.qmlls.verboseOutput": true,
+    "qt-qml.qmlls.additionalImportPaths": [
+      "${workspaceFolder}/build-dev/src/qml/snippy/"
+    ]
   },
   "launch": {
     "version": "0.2.0",
