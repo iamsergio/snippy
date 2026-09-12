@@ -22,6 +22,7 @@
 
 #include "mainwindow.h"
 #include "syntaxhighlighter.h"
+#include "foldericondelegate.h"
 
 #include <QTimer>
 #include <QItemSelection>
@@ -62,6 +63,7 @@ MainWindow::MainWindow(const QString &initialFilter, QWidget *parent)
 
     m_splitter->setSizes({ 100, 1000 });
     m_treeView->setModel(m_kernel.topLevelModel());
+    m_treeView->setItemDelegate(new FolderIconDelegate(m_treeView));
 
     connect(m_kernel.model(), &SnippetModel::loaded,
             [this](int num, const QString &path) { //

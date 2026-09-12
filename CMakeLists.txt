@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(snippy LANGUAGES CXX)
 
 SET(SNIPPY_SRCS
+    foldericondelegate.cpp
     kernel.cpp
     main.cpp
     mainwindow.cpp

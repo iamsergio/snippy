@@ -26,8 +26,6 @@
 #include <QStandardItem>
 #include <QDir>
 #include <QDebug>
-#include <QStyle>
-#include <QApplication>
 #include <QFile>
 #include <QUuid>
 
@@ -47,10 +45,7 @@ QVariant SnippetModel::data(const QModelIndex &index, int role) const
 
     const bool isFolder = this->isFolder(index);
     if (isFolder) {
-        if (role == Qt::DecorationRole) {
-            QStyle *style = qApp->style();
-            return style->standardIcon(QStyle::SP_DirOpenIcon);
-        } else if (role == Qt::DisplayRole) {
+        if (role == Qt::DisplayRole) {
             return data(index, FolderNameRole);
         } else if (role == Qt::EditRole) {
             return data(index, FolderNameRole);
