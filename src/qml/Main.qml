@@ -65,6 +65,7 @@ QC.ApplicationWindow {
         onAccepted: {
             if (newFolderNameField.text.length > 0) {
                 const idx = Backend.createFolder(newFolderNameField.text);
+                treeView.expandToIndex(idx);
                 treeSelection.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect);
             }
         }
@@ -83,6 +84,7 @@ QC.ApplicationWindow {
                 text: "New Snippet"
                 onClicked: {
                     const idx = Backend.createSnippet();
+                    treeView.expandToIndex(idx);
                     treeSelection.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect);
                 }
             }
