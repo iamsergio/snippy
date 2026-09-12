@@ -4,8 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Snippy is a Qt Widgets desktop app for browsing and editing a tree of text snippets stored as
-`.snip` files on disk. Qt 6 only (developed against 6.10).
+Snippy is a desktop app for browsing and editing a tree of text snippets stored as `.snip` files
+on disk. Qt 6 only (developed against 6.10). Two frontends share the same data layer: `snippy`
+(QtWidgets, the original app) and `snippy-qml` (QtQuick/QML). See "Two frontends" below.
 
 ## Build / run
 
@@ -15,8 +16,11 @@ cmake --preset release  && cmake --build build-release    # RelWithDebInfo
 ./install.sh                                              # release build + copy over `which snippy`
 ```
 
-Presets use Ninja and put the build tree in `build-<presetName>/`. `snippy.pro` is a stale qmake
-leftover (missing `removeemptyfoldersproxymodel.cpp`); CMake is the real build system.
+Presets use Ninja and put the build tree in `build-<presetName>/`; both `snippy` and `snippy-qml`
+land directly in it (`CMAKE_RUNTIME_OUTPUT_DIRECTORY`). `snippy.pro` is a stale qmake leftover
+(missing `removeemptyfoldersproxymodel.cpp`); CMake is the real build system.
+
+`ninja -C build-dev all_qmllint` lints the QML frontend.
 
 Runtime configuration is entirely through environment variables:
 
@@ -44,6 +48,21 @@ fixtures in `rust/test_data/` are the clearest specification of the on-disk form
 
 ## Architecture
 
+### Two frontends, one core
+
+`src/core` builds `snippy_core`, a static lib with the data layer: `Kernel`, `Snippet`,
+`SnippetModel`, `SnippetProxyModel`, `RemoveEmptyFoldersProxyModel`. Neither this lib nor anything
+it depends on links QtWidgets — that's what lets `src/qml` reuse it. `SnippetModel` also exposes
+its custom roles through `roleNames()` (forwarded automatically by the proxy stack) purely for the
+QML frontend's benefit; QtWidgets code keeps addressing roles by their int constants.
+
+`src/widgets` builds `snippy`: `MainWindow` drives `Kernel` directly, as described below.
+
+`src/qml` builds `snippy-qml`: `QmlBackend` (a `QML_SINGLETON`) wraps a `Kernel` and exposes the
+same model/filter/CRUD surface to `Main.qml`, plus a "current selection" concept that `MainWindow`
+gets for free from `QTreeView`'s own selection model. External-editor/file-explorer integration and
+the markdown preview aren't ported to the QML side yet.
+
 ### Storage format
 
 The directory tree *is* the model tree. Each snippet is one `.snip` file:
@@ -61,8 +80,8 @@ UUID-named file immediately. Renaming a folder renames the directory.
 ### Model stack
 
 `SnippetModel` (a `QStandardItemModel` mirroring the disk tree) → `SnippetProxyModel` (the filter) →
-`QTreeView`. `RemoveEmptyFoldersProxyModel` is a third layer that is **currently commented out** in
-`kernel.cpp` while still being compiled.
+`QTreeView` (widgets) / `TreeView` (QML). `RemoveEmptyFoldersProxyModel` is a third layer that is
+**currently commented out** in `src/core/kernel.cpp` while still being compiled.
 
 `Kernel` is the only class that knows how deep the stack is. Use `Kernel::topLevelModel()`,
 `mapToSource()` and `mapFromSource()` rather than talking to a specific proxy — that is what makes
@@ -92,13 +111,21 @@ engine purely so the line edit can be tinted red. While `m_filterHasError` is se
 
 ### UI
 
-`MainWindow` privately inherits `Ui::MainWindow`, so widget members (`m_treeView`,
+`MainWindow` (`src/widgets`) privately inherits `Ui::MainWindow`, so widget members (`m_treeView`,
 `m_filterLineEdit`, `m_deepSearchCB`, …) come from `mainwindow.ui` and are not declared in the
 header. `SyntaxHighlighter` highlights the current search tokens inside the snippet text.
+`FolderIconDelegate` supplies the folder icon on `m_treeView` — `SnippetModel` itself doesn't (see
+"Two frontends, one core").
+
+`Main.qml` (`src/qml`) is the QML equivalent: a `TreeView` bound to `Backend.model`, a tags field +
+contents `TextArea` bound to `Backend.current*`, and toolbar actions calling `Backend`'s
+`Q_INVOKABLE`s. Folders are just bolded there (`model.isFolder`), no delegate needed.
 
 ## Conventions
 
 - Format with the repo `.clang-format` (WebKit-based, `ColumnLimit: 0`, braces on their own line for
-  functions and classes only).
+  functions and classes only). `.clang-tidy` and `.cmake-format.yaml` also exist; `.qmllint.ini`
+  configures `ninja all_qmllint`. `REUSE.toml` covers the non-source config files that can't carry
+  a header comment.
 - New files carry the existing GPL-2-or-later header with the Qt linking exception.
-- `Qt6::Core5Compat` is still linked in `CMakeLists.txt` but nothing uses it any more.
+- `Qt6::Core5Compat` is still linked in `src/widgets/CMakeLists.txt` but nothing uses it any more.
