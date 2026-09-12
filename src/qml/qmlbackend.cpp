@@ -27,6 +27,20 @@
 
 #include <QStandardItem>
 #include <QTimer>
+#include <QProcess>
+#include <QFileInfo>
+#include <QDebug>
+
+static void runCommand(const QString &command)
+{
+    auto proc = new QProcess();
+    QObject::connect(proc, &QProcess::finished, proc, [proc](int ret, QProcess::ExitStatus) {
+        if (ret != 0)
+            qWarning() << "Error running" << proc->program() << proc->arguments();
+        proc->deleteLater();
+    });
+    proc->start(command);
+}
 
 QmlBackend::QmlBackend(QObject *parent)
     : QObject(parent)
@@ -97,6 +111,9 @@ Snippet *QmlBackend::currentSnippet() const
 
 QString QmlBackend::currentTitle() const
 {
+    if (currentIsFolder())
+        return m_currentIndex.data(SnippetModel::FolderNameRole).toString();
+
     Snippet *snippet = currentSnippet();
     return snippet ? snippet->title() : QString();
 }
@@ -120,6 +137,14 @@ void QmlBackend::setCurrentIndex(const QModelIndex &proxyIndex)
 
     m_currentIndex = proxyIndex;
     emit currentChanged();
+}
+
+void QmlBackend::setCurrentTitle(const QString &title)
+{
+    if (!m_currentIndex.isValid())
+        return;
+
+    m_kernel.model()->setData(m_kernel.mapToSource(m_currentIndex), title, Qt::EditRole);
 }
 
 void QmlBackend::setCurrentTags(const QString &text)
@@ -166,4 +191,23 @@ void QmlBackend::deleteCurrent()
 void QmlBackend::reload()
 {
     m_kernel.model()->load();
+}
+
+void QmlBackend::openDataFolder()
+{
+    const QString command = m_kernel.externalFileExplorer();
+    if (command.isEmpty()) {
+        qWarning() << "Please set the SNIPPY_FILE_EXPLORER env variable. For example to"
+                   << "\"dolphin %1\"";
+        return;
+    }
+
+    const QString path = QFileInfo(QString::fromUtf8(m_kernel.model()->snippetDataFolder())).absoluteFilePath();
+    QString fullCommand = command;
+    if (fullCommand.contains(QLatin1String("%1")))
+        fullCommand = fullCommand.arg(path);
+    else
+        fullCommand += ' ' + path;
+
+    runCommand(fullCommand);
 }

@@ -67,12 +67,14 @@ public:
     QString currentContents() const;
 
     Q_INVOKABLE void setCurrentIndex(const QModelIndex &proxyIndex);
+    Q_INVOKABLE void setCurrentTitle(const QString &);
     Q_INVOKABLE void setCurrentTags(const QString &);
     Q_INVOKABLE void setCurrentContents(const QString &);
     Q_INVOKABLE QModelIndex createSnippet();
     Q_INVOKABLE QModelIndex createFolder(const QString &name);
     Q_INVOKABLE void deleteCurrent();
     Q_INVOKABLE void reload();
+    Q_INVOKABLE void openDataFolder();
 
 Q_SIGNALS:
     void filterTextChanged(const QString &);
