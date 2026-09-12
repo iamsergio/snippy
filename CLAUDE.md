@@ -13,7 +13,7 @@ on disk. Qt 6 only (developed against 6.10). Two frontends share the same data l
 ```bash
 cmake --preset dev      && cmake --build build-dev        # Debug
 cmake --preset release  && cmake --build build-release    # RelWithDebInfo
-./install.sh                                              # release build + copy over `which snippy`
+./scripts/deploy-linux.sh                                 # release build + copy snippy/snippy-qml to /pub_data/installed/
 ```
 
 Presets use Ninja and put the build tree in `build-<presetName>/`; both `snippy` and `snippy-qml`
