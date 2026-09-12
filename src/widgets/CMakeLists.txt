@@ -1,5 +1,4 @@
 find_package(Qt6Widgets REQUIRED)
-find_package(Qt6Core5Compat)
 
 add_executable(snippy
     foldericondelegate.cpp
@@ -14,4 +13,4 @@ add_executable(snippy
 target_include_directories(snippy PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Qt6::Qml comes in transitively via snippy_core's PUBLIC link (QJSEngine in SnippetProxyModel).
-target_link_libraries(snippy PRIVATE snippy_core Qt6::Widgets Qt6::Core5Compat)
+target_link_libraries(snippy PRIVATE snippy_core Qt6::Widgets)
