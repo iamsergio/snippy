@@ -97,6 +97,18 @@ bool SnippetModel::setData(const QModelIndex &index, const QVariant &value, int 
     return true;
 }
 
+QHash<int, QByteArray> SnippetModel::roleNames() const
+{
+    // QML delegates address roles by name; QSortFilterProxyModel forwards roleNames() to us.
+    QHash<int, QByteArray> roles = QStandardItemModel::roleNames();
+    roles[SnippetRole] = "snippet";
+    roles[IsFolderRole] = "isFolder";
+    roles[FolderNameRole] = "folderName";
+    roles[AbsolutePathRole] = "absolutePath";
+    roles[RelativePathRole] = "relativePath";
+    return roles;
+}
+
 bool SnippetModel::isFolder(const QModelIndex &index) const
 {
     QStandardItem *item = itemFromIndex(index);
@@ -220,6 +232,10 @@ QStandardItem *SnippetModel::addSnippet(Snippet *snippet, QStandardItem *parentI
 {
     QStandardItem *fileItem = new QStandardItem();
     fileItem->setData(QVariant::fromValue(snippet), SnippetRole);
+    // Explicit false, not left unset: QML reads IsFolderRole as a raw QVariant via
+    // roleNames(), without the .toBool() that shields every C++ call site here from an
+    // invalid (unset) one.
+    fileItem->setData(false, IsFolderRole);
     parentItem->appendRow(fileItem);
     m_numSnippets++;
 
