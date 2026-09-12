@@ -16,6 +16,7 @@ add_subdirectory(src)
 
 if (SNIPPY_DEVELOPER_BUILD)
     target_compile_definitions(snippy PRIVATE SNIPPY_DEVELOPER_BUILD)
+    target_compile_definitions(snippy-qml PRIVATE SNIPPY_DEVELOPER_BUILD)
 endif()
 
 set(QT_NO_PRIVATE_MODULE_WARNING ON)
@@ -28,7 +29,7 @@ if (SNIPPY_BUILD_QT_COMMANDER)
 
     # Read by the two subdirectories below; plain variables, not cache entries.
     set(QT_MAJOR_VERSION 6)
-    set(WITH_QML OFF) # snippy is pure QWidgets
+    set(WITH_QML ON) # snippy-qml needs it, even though snippy itself is pure QWidgets
 
     add_subdirectory(${qtcommander_dir}/src/injector ${CMAKE_BINARY_DIR}/qt-commander/injector)
     add_subdirectory(${qtcommander_dir}/src/library ${CMAKE_BINARY_DIR}/qt-commander/library)
