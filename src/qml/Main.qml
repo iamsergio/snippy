@@ -152,10 +152,83 @@ QC.ApplicationWindow {
             Item {
                 Layout.fillWidth: true
             }
+        }
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+
+        QC.SplitView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            orientation: Qt.Horizontal
+
+            QC.Frame {
+                QC.SplitView.preferredWidth: 300
+                QC.SplitView.fillHeight: true
+
+                TreeView {
+                    id: treeView
+                    anchors.fill: parent
+                    clip: true
+                    model: Backend.model
+
+                    // Without this, the column's width is its widest delegate's implicit
+                    // (unelided) content width, so one long title pushes the column past the
+                    // viewport and every row's "elide: Text.ElideRight" never has to do anything.
+                    columnWidthProvider: function () {
+                        return width;
+                    }
+                    selectionModel: treeSelection
+
+                    delegate: QC.TreeViewDelegate {
+                        contentItem: QC.Label {
+                            text: model.display
+                            font.bold: model.isFolder
+                            elide: Text.ElideRight
+                        }
+                    }
+                }
+            }
+
+            QC.Frame {
+                QC.SplitView.fillWidth: true
+                QC.SplitView.fillHeight: true
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    enabled: Backend.hasSelection && !Backend.currentIsFolder
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        QC.Label {
+                            text: "Tags (separated by ;)"
+                        }
+                        QC.TextField {
+                            id: tagsField
+                            Layout.fillWidth: true
+                            onEditingFinished: Backend.setCurrentTags(text)
+                        }
+                    }
+
+                    QC.TextArea {
+                        id: contentsArea
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        wrapMode: TextEdit.NoWrap
+                        onEditingFinished: Backend.setCurrentContents(text)
+                    }
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
 
             QC.TextField {
                 id: filterField
-                Layout.preferredWidth: 260
+                Layout.fillWidth: true
                 placeholderText: "Filter (a & b & (!c | d))"
                 palette.text: Backend.filterHasError ? "red" : window.palette.text
                 onTextChanged: {
@@ -168,69 +241,6 @@ QC.ApplicationWindow {
                 onToggled: {
                     Backend.deepSearch = checked;
                     applyFilter();
-                }
-            }
-        }
-    }
-
-    QC.SplitView {
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-
-        QC.Frame {
-            QC.SplitView.preferredWidth: 300
-            QC.SplitView.fillHeight: true
-
-            TreeView {
-                id: treeView
-                anchors.fill: parent
-                clip: true
-                model: Backend.model
-
-                // Without this, the column's width is its widest delegate's implicit
-                // (unelided) content width, so one long title pushes the column past the
-                // viewport and every row's "elide: Text.ElideRight" never has to do anything.
-                columnWidthProvider: function () {
-                    return width;
-                }
-                selectionModel: treeSelection
-
-                delegate: QC.TreeViewDelegate {
-                    contentItem: QC.Label {
-                        text: model.display
-                        font.bold: model.isFolder
-                        elide: Text.ElideRight
-                    }
-                }
-            }
-        }
-
-        QC.Frame {
-            QC.SplitView.fillWidth: true
-            QC.SplitView.fillHeight: true
-
-            ColumnLayout {
-                anchors.fill: parent
-                enabled: Backend.hasSelection && !Backend.currentIsFolder
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    QC.Label {
-                        text: "Tags (separated by ;)"
-                    }
-                    QC.TextField {
-                        id: tagsField
-                        Layout.fillWidth: true
-                        onEditingFinished: Backend.setCurrentTags(text)
-                    }
-                }
-
-                QC.TextArea {
-                    id: contentsArea
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    wrapMode: TextEdit.NoWrap
-                    onEditingFinished: Backend.setCurrentContents(text)
                 }
             }
         }
