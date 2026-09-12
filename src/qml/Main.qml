@@ -57,12 +57,17 @@ QC.ApplicationWindow {
         id: newFolderDialog
         title: "New folder"
         anchors.centerIn: parent
+        width: 280
         modal: true
         standardButtons: QC.Dialog.Ok | QC.Dialog.Cancel
 
+        // A bare fixed width here would exceed the dialog's own implicit width (which,
+        // absent a fillWidth layout, comes only from the title/buttons) and overflow past
+        // its frame instead of being clipped to it.
         QC.TextField {
             id: newFolderNameField
-            width: 240
+            anchors.left: parent.left
+            anchors.right: parent.right
             placeholderText: "Folder name"
         }
 
@@ -83,12 +88,14 @@ QC.ApplicationWindow {
         id: renameDialog
         title: "Rename"
         anchors.centerIn: parent
+        width: 280
         modal: true
         standardButtons: QC.Dialog.Ok | QC.Dialog.Cancel
 
         QC.TextField {
             id: renameField
-            width: 240
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
 
         onOpened: {
