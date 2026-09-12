@@ -28,6 +28,11 @@ find_package(Qt6Core5Compat)
 target_link_libraries(snippy Qt6::Widgets Qt6::Qml Qt6::Core5Compat)
 
 option(SNIPPY_BUILD_QT_COMMANDER "Build the qt-commander injector used for UI automation" OFF)
+option(SNIPPY_DEVELOPER_BUILD "Build with developer options" OFF)
+
+if (SNIPPY_DEVELOPER_BUILD)
+    target_compile_definitions(snippy PRIVATE SNIPPY_DEVELOPER_BUILD)
+endif()
 
 set(QT_NO_PRIVATE_MODULE_WARNING ON)
 

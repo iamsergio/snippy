@@ -26,6 +26,10 @@
 #include <QStyleFactory>
 #include <QCommandLineParser>
 
+#if defined(Q_OS_LINUX) && defined(SNIPPY_DEVELOPER_BUILD)
+#include <sys/prctl.h>
+#endif
+
 static QString getArg()
 {
     QStringList args = qApp->arguments();
@@ -39,6 +43,14 @@ static QString getArg()
 int main(int argv, char **argc)
 {
     QApplication app(argv, argc);
+
+#if defined(Q_OS_LINUX) && defined(SNIPPY_DEVELOPER_BUILD)
+    // Opts into same-uid ptrace (e.g. from qt-commander's injector) without lowering
+    // /proc/sys/kernel/yama/ptrace_scope system-wide, which would expose every other
+    // process (browsers, ssh-agent, ...) to the same relaxation.
+    prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY, 0, 0, 0);
+#endif
+
     QFont f(QStringLiteral("DejaVu Sans Mono"));
     f.setPixelSize(12);
     app.setFont(f);
