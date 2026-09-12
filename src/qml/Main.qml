@@ -18,6 +18,15 @@ QC.ApplicationWindow {
 
     Component.onCompleted: filterField.forceActiveFocus()
 
+    // SnippetProxyModel only re-evaluates acceptance for branches the view has already
+    // queried; TreeView is lazy and never expands on its own, so rows inside a collapsed
+    // branch never get re-filtered. Expand everything while a filter is active so every
+    // branch gets queried, same as MainWindow::updateFilter() does for the QTreeView.
+    function applyFilter() {
+        if (filterField.text.length > 0)
+            treeView.expandRecursively();
+    }
+
     ItemSelectionModel {
         id: treeSelection
         model: Backend.model
@@ -96,11 +105,17 @@ QC.ApplicationWindow {
                 Layout.preferredWidth: 260
                 placeholderText: "Filter (a & b & (!c | d))"
                 palette.text: Backend.filterHasError ? "red" : window.palette.text
-                onTextChanged: Backend.filterText = text
+                onTextChanged: {
+                    Backend.filterText = text;
+                    applyFilter();
+                }
             }
             QC.CheckBox {
                 text: "Search in contents"
-                onToggled: Backend.deepSearch = checked
+                onToggled: {
+                    Backend.deepSearch = checked;
+                    applyFilter();
+                }
             }
         }
     }
