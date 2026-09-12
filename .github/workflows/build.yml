@@ -24,7 +24,6 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.*'
-        modules: 'qt5compat qtdeclarative'
 
     - name: Install Ninja
       run: |
